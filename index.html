@@ -16,12 +16,12 @@
 
     try {
       scramjet.init();
-      navigator.serviceWorker.register("/sw.js");
+      navigator.serviceWorker.register("https://cdn.jsdelivr.net/gh/soap-phia/tinyjet@latest/sw.js");
     } catch (e) { 
       console.error("scramjet failed to initialize;", e); 
     }
 
-    const connection = new BareMux.BareMuxConnection("/bareworker.js");
+    const connection = new BareMux.BareMuxConnection("https://cdn.jsdelivr.net/gh/soap-phia/tinyjet@latest/bareworker.js");
 
     const wispUrl = "wss://gointospace.app/wisp/";
 
