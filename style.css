@@ -108,6 +108,18 @@ iframe {
     --text-color: #cdd6f4;
 }
 
+.mrworkshop {
+    --base: #111111;
+    --surface: #222222;
+    --text-color: #ffffff;
+}
+
+.aerialite {
+    --base: #5FD7FF;
+    --surface: #4ca7c5;
+    --text-color: #ffffff;
+}
+
 #search {
     width: 100%;
     margin: 0;
