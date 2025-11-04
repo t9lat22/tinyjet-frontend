@@ -27,6 +27,15 @@
       <label>
         <input type="radio" name="transport" value="libcurl"> Libcurl
       </label>
+      <h4>Search Engine</h4>
+      <select id="searchEnginePicker">
+        <option value="google">Google</option>
+        <option value="bing">Bing</option>
+        <option value="duckduckgo">DuckDuckGo</option>
+        <option value="brave">Brave (default)</option>
+        <option value="custom">Custom</option>
+      </select>
+      <input id="customSearch" type="text" placeholder="https://search.example.com/search?q=%s" style="display:none; width:100%; margin-top:8px;" />
       <h4>Theme</h4>
       <select id="themePicker">
         <option value="default">Default</option>
@@ -68,6 +77,8 @@
     const wispInput = document.getElementById("wispInput");
     const transports = document.querySelectorAll('input[name="transport"]');
     const themePicker = document.getElementById('themePicker');
+    const searchEnginePicker = document.getElementById('searchEnginePicker');
+    const customSearchInput = document.getElementById('customSearch');
 
     gear.onclick = () => { overlay.classList.toggle("active"); settings.classList.toggle("open") }
     overlay.onclick = e => { if (e.target === overlay) overlay.classList.remove("active"); settings.classList.remove("open") }
@@ -95,9 +106,14 @@
       }
     }
 
-    function search(input) {
-      let template = "https://search.brave.com/search?q=%s";
+    const searchTemplates = {
+      google: "https://www.google.com/search?q=%s",
+      bing: "https://www.bing.com/search?q=%s",
+      duckduckgo: "https://duckduckgo.com/?q=%s",
+      brave: "https://search.brave.com/search?q=%s"
+    };
 
+    function search(input) {
       try {
         return new URL(input).toString();
       } catch (err) {}
@@ -107,17 +123,31 @@
         if (url.hostname.includes(".")) return url.toString();
       } catch (err) {}
 
-      return template.replace("%s", input); 
+      const engine = (localStorage.getItem('selectedSearchEngine') || 'brave');
+      let template;
+      if (engine === 'custom') {
+        template = (customSearchInput.value && customSearchInput.value.trim()) || localStorage.getItem('customSearchTemplate') || "";
+      } else {
+        template = searchTemplates[engine] || searchTemplates.brave;
+      }
+
+      if (!template) template = searchTemplates.brave;
+      return template.replace("%s", encodeURIComponent(input));
     }
 
     const currentWisp = localStorage.getItem('selectedWisp') || "wss://gointospace.app/wisp/";
     const currentTransport = localStorage.getItem('selectedTransport') || "epoxy";
     const currentTheme = localStorage.getItem('selectedTheme') || "default";
+    const currentSearchEngine = localStorage.getItem('selectedSearchEngine') || "brave";
+    const currentCustomTemplate = localStorage.getItem('customSearchTemplate') || "";
 
     document.getElementById("websocket").value = currentWisp;
     document.querySelector(`input[value="${currentTransport}"]`).checked = true;
     themePicker.value = currentTheme;
     document.body.className = currentTheme;
+    searchEnginePicker.value = currentSearchEngine;
+    customSearchInput.value = currentCustomTemplate;
+    customSearchInput.style.display = (currentSearchEngine === 'custom') ? 'block' : 'none';
 
     setTransport(currentTransport); 
         
@@ -133,6 +163,25 @@
       radio.addEventListener('change', async (event) => {
         await setTransport(event.target.value);
       });
+    });
+
+    searchEnginePicker.addEventListener('change', (event) => {
+      const engine = event.target.value;
+      localStorage.setItem('selectedSearchEngine', engine);
+      if (engine === 'custom') {
+        customSearchInput.style.display = 'block';
+      } else {
+        customSearchInput.style.display = 'none';
+      }
+    });
+
+    customSearchInput.addEventListener('blur', (e) => {
+      const val = e.target.value.trim();
+      localStorage.setItem('customSearchTemplate', val);
+    });
+    customSearchInput.addEventListener('change', (e) => {
+      const val = e.target.value.trim();
+      localStorage.setItem('customSearchTemplate', val);
     });
 
     themePicker.addEventListener('change', (event) => {
