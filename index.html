@@ -1,10 +1,45 @@
-<body>
-  <form id="search"><input id="url" type="text" class="search-input search" placeholder="Search the web or enter URL"></form>
-  <form id="wisp"><input id="websocket" type="text" class="search-input search" value="wss://gointospace.app/wisp/"></form>
-  <iframe id="iframe" width="100%" height="100%"></iframe>
+<head>
+  <title>TinyJet Proxy</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
+</head>
+<body class="default">
+  <header>
+    <form id="search"><input id="url" type="text" class="search-input search" placeholder="Search the web or enter URL"></form>
+    <span id="gear"><i class="fa">&#xf013;</i></span>
+  </header>
+  <div id="overlay">
+    <div id="settings">
+      <h3>Settings</h3>
+        <h4>WISP Server</h4>
+        <form id="wispInput">
+          <input id="websocket" type="text" placeholder="wss://gointospace.app/wisp/" value="wss://gointospace.app/wisp/">
+          <button type="submit">Set WISP</button>
+        </form>
+      <h4>Transport Protocol</h4>
+      <label>
+        <input type="radio" name="transport" value="epoxy" checked> Epoxy (Default)
+      </label><br>
+      <label>
+        <input type="radio" name="transport" value="libcurl"> Libcurl
+      </label>
+      <h4>Theme</h4>
+      <select id="themePicker">
+        <option value="default">Default</option>
+        <option value="macchiato">Catppuccin Macchiato</option>
+      </select>
+    </div>
+  </div>
+  <iframe id="iframe" width="100%"></iframe>
+
   <script src="https://cdn.jsdelivr.net/gh/soap-phia/tinyjet@latest/tinyjet/scramjet.all.js" defer></script>
   <script type="module" defer>
     import * as BareMux from "https://cdn.jsdelivr.net/npm/@mercuryworkshop/bare-mux/dist/index.mjs";
+
     const { ScramjetController } = $scramjetLoadController();
     const scramjet = new ScramjetController({ 
       files: { 
@@ -13,19 +48,34 @@
         sync: "https://cdn.jsdelivr.net/gh/soap-phia/tinyjet@latest/tinyjet/scramjet.sync.js" 
       } 
     });
+
     try {
       scramjet.init();
       navigator.serviceWorker.register("/sw.js");
     } catch (e) { console.error("scramjet failed to initialize;", e); }
+
     const connection = new BareMux.BareMuxConnection("/bareworker.js");
-    document.getElementById("websocket").placeholder = "wss://gointospace.app/wisp/";
+
+    const settings = document.getElementById("settings");
+    const gear = document.getElementById("gear");
+    const overlay = document.getElementById("overlay"); 
+    const wispInput = document.getElementById("wispInput");
+    const transports = document.querySelectorAll('input[name="transport"]');
+    const themePicker = document.getElementById('themePicker');
+
+    gear.onclick = () => { overlay.classList.toggle("active"); settings.classList.toggle("open") }
+    overlay.onclick = e => { if (e.target === overlay) overlay.classList.remove("active"); settings.classList.remove("open") }
+    document.onkeydown = e => { if (e.key === "Escape") { overlay.classList.remove("active"); settings.classList.remove("open") } }
+
     function getWispUrl() {
-        const wisp = document.getElementById("websocket").value.trim();
-        const defaultWisp = "wss://gointospace.app/wisp/";
-        return wisp || defaultWisp;
+      const wisp = document.getElementById("websocket").value.trim();
+      const defaultWisp = "wss://gointospace.app/wisp/";
+      return wisp || defaultWisp;
     }
+
     async function setTransport(transportsel) {
       const wispUrl = getWispUrl();
+      localStorage.setItem('selectedTransport', transportsel);
       switch (transportsel) {
         case "epoxy":
           await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
@@ -38,10 +88,7 @@
           break;
       }
     }
-    document.getElementById("wisp").addEventListener("submit", async (event) => {
-        event.preventDefault();
-        await setTransport("epoxy");
-    });
+
     function search(input) {
       let template = "https://search.brave.com/search?q=%s";
 
@@ -57,7 +104,37 @@
       return template.replace("%s", input); 
     }
 
-    setTransport("epoxy");
+    const currentWisp = localStorage.getItem('selectedWisp') || "wss://gointospace.app/wisp/";
+    const currentTransport = localStorage.getItem('selectedTransport') || "epoxy";
+    const currentTheme = localStorage.getItem('selectedTheme') || "default";
+
+    document.getElementById("websocket").value = currentWisp;
+    document.querySelector(`input[value="${currentTransport}"]`).checked = true;
+    themePicker.value = currentTheme;
+    document.body.className = currentTheme;
+
+    setTransport(currentTransport); 
+        
+    wispInput.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const newWisp = document.getElementById("websocket").value.trim();
+      localStorage.setItem('selectedWisp', newWisp);
+      const currentTransport = document.querySelector('input[name="transport"]:checked').value;
+      await setTransport(currentTransport);
+    });
+
+    transports.forEach(radio => {
+      radio.addEventListener('change', async (event) => {
+        await setTransport(event.target.value);
+      });
+    });
+
+    themePicker.addEventListener('change', (event) => {
+      const selectedTheme = event.target.value;
+      document.body.className = selectedTheme;
+      localStorage.setItem('selectedTheme', selectedTheme);
+    });
+    
     document.getElementById("search").addEventListener("submit", async (event) => {
       event.preventDefault();
       let fixedurl = search(document.getElementById("url").value);
