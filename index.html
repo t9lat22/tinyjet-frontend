@@ -5,249 +5,202 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TinyJet Browser</title>
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
   <style>
-    /* Reset & Base Styles */
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Inter', sans-serif;
     }
 
     body {
-      background: #0f0f14;
-      color: #ffffff;
+      font-family: 'Sora', sans-serif;
+      background-color: #1e1e2e;
+      color: #e0e0e0;
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
-    /* Top Navigation Bar */
-    .top-nav {
-      background: #1a1a23;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      border-bottom: 1px solid #2d2d3a;
-      flex-shrink: 0;
+    /* Browser chrome */
+    .browser-chrome {
+      background-color: #2a2a3b;
+      border-bottom: 1px solid #444;
     }
 
-    .nav-left, .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-center {
-      flex: 1;
-      margin: 0 12px;
-    }
-
-    .nav-btn {
-      background: transparent;
-      border: none;
-      color: #a0a0b0;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      font-size: 14px;
-    }
-
-    .nav-btn:hover {
-      background: #2d2d3a;
-      color: #ffffff;
-    }
-
-    .nav-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .nav-btn:disabled:hover {
-      background: transparent;
-      color: #a0a0b0;
-    }
-
-    .nav-divider {
-      width: 1px;
-      height: 24px;
-      background: #2d2d3a;
-      margin: 0 8px;
-    }
-
-    /* URL Bar */
-    .url-bar-container {
-      display: flex;
-      align-items: center;
-      background: #0f0f14;
-      border: 1px solid #2d2d3a;
-      border-radius: 8px;
-      padding: 4px 8px;
-      height: 36px;
-    }
-
-    .url-bar-icons {
-      padding: 0 8px;
-      color: #60a5fa;
-      display: flex;
-      gap: 8px;
-    }
-
-    .url-bar-form {
-      flex: 1;
-    }
-
-    .url-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      font-size: 14px;
-      padding: 6px 8px;
-      outline: none;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .url-input::placeholder {
-      color: #6b7280;
-    }
-
-    .url-action-btn {
-      background: transparent;
-      border: none;
-      color: #a0a0b0;
-      width: 28px;
-      height: 28px;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      font-size: 14px;
-    }
-
-    .url-action-btn:hover {
-      background: #2d2d3a;
-      color: #fbbf24;
-    }
-
-    /* Tab Bar */
+    /* Tab bar */
     .tab-bar {
-      background: #1a1a23;
-      height: 40px;
-      border-bottom: 1px solid #2d2d3a;
-      flex-shrink: 0;
-    }
-
-    .tabs-container {
       display: flex;
       align-items: center;
-      height: 100%;
-      padding: 0 12px;
-      gap: 4px;
+      padding: 4px 8px 0 8px;
+      background-color: #252536;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .tab-bar::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .tab-bar::-webkit-scrollbar-thumb {
+      background-color: #555;
+      border-radius: 2px;
     }
 
     .tab {
-      background: #2d2d3a;
-      border-radius: 6px 6px 0 0;
-      padding: 8px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
-      cursor: pointer;
-      max-width: 200px;
-      min-width: 120px;
-      transition: all 0.2s;
-      border: 1px solid transparent;
+      padding: 8px 12px;
+      background-color: #33344d;
+      border: 1px solid #444;
       border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      min-width: 180px;
+      max-width: 240px;
+      position: relative;
+      transition: background 0.2s;
+      margin-right: 2px;
+    }
+
+    .tab:hover {
+      background-color: #3a3b50;
     }
 
     .tab.active {
-      background: #0f0f14;
-      border-color: #3b82f6;
+      background-color: #2a2a3b;
+      border-bottom: 2px solid #2a2a3b;
     }
 
-    .tab:hover:not(.active) {
-      background: #252533;
+    .tab-favicon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
     }
 
     .tab-title {
       flex: 1;
-      font-size: 13px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #d1d5db;
-    }
-
-    .tab.active .tab-title {
-      color: #ffffff;
+      font-size: 13px;
     }
 
     .tab-close {
-      background: transparent;
-      border: none;
-      color: #9ca3af;
       width: 16px;
       height: 16px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
+      font-size: 12px;
+      flex-shrink: 0;
+      opacity: 0.7;
       transition: all 0.2s;
-      padding: 0;
     }
 
     .tab-close:hover {
-      background: #4b5563;
-      color: #ffffff;
+      background-color: #ff5555;
+      opacity: 1;
     }
 
-    .add-tab-btn {
-      background: transparent;
+    .new-tab-btn {
+      padding: 8px 12px;
+      background-color: transparent;
       border: none;
-      color: #9ca3af;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
+      color: #ccc;
       cursor: pointer;
+      font-size: 18px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      margin-left: 4px;
+    }
+
+    .new-tab-btn:hover {
+      background-color: #44445c;
+    }
+
+    /* Navigation bar */
+    .nav-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+      padding: 8px 12px;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background-color: transparent;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background-color: #44445c;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .url-bar {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background-color: #33344d;
+      border-radius: 999px;
+      padding: 0 12px;
+      gap: 8px;
+    }
+
+    .url-input {
+      flex: 1;
+      padding: 8px 0;
+      border: none;
+      background: transparent;
+      color: #e0e0e0;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .url-input::placeholder {
+      color: #aaa;
+    }
+
+    .lock-icon {
+      color: #4ade80;
       font-size: 14px;
     }
 
-    .add-tab-btn:hover {
-      background: #2d2d3a;
-      color: #ffffff;
+    #gear {
+      cursor: pointer;
+      font-size: 18px;
+      color: #ccc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
     }
 
-    /* Browser Content Area */
-    .browser-content {
+    #gear:hover {
+      background-color: #44445c;
+    }
+
+    /* Tab content area */
+    .tabs-content {
       flex: 1;
-      overflow: hidden;
       position: relative;
-      background: #ffffff;
+      background-color: #1e1e2e;
+      overflow: hidden;
     }
 
     .tab-content {
@@ -263,196 +216,55 @@
       display: block;
     }
 
-    .browser-iframe {
+    .tab-content iframe {
       width: 100%;
       height: 100%;
       border: none;
-      background: #ffffff;
+      background-color: #fff;
     }
 
-    /* New Tab Page */
     .new-tab-page {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #0f0f14;
-      display: none;
-      overflow-y: auto;
-    }
-
-    .new-tab-page.active {
-      display: block;
-    }
-
-    .new-tab-content {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 60px 20px;
-    }
-
-    .logo-container {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .logo-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-    }
-
-    .logo-text {
-      font-size: 48px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #60a5fa, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .search-box-container {
-      margin-bottom: 40px;
-    }
-
-    .new-tab-search-form {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .search-input-wrapper {
-      position: relative;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6b7280;
-      z-index: 1;
-    }
-
-    .new-tab-search-input {
-      width: 100%;
-      padding: 16px 20px 16px 48px;
-      background: #1a1a23;
-      border: 2px solid #2d2d3a;
-      border-radius: 24px;
-      color: #ffffff;
-      font-size: 16px;
-      outline: none;
-      transition: all 0.3s;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .new-tab-search-input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    /* Quick Links */
-    .quick-links {
-      margin-top: 40px;
-    }
-
-    .quick-links-title {
-      text-align: center;
-      margin-bottom: 24px;
-      color: #9ca3af;
-      font-weight: 500;
-      font-size: 18px;
-    }
-
-    .quick-links-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 16px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .quick-link {
-      background: #1a1a23;
-      border-radius: 12px;
-      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: 1px solid transparent;
-      text-decoration: none;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
     }
 
-    .quick-link:hover {
-      background: #252533;
-      border-color: #3b82f6;
-      transform: translateY(-2px);
+    .new-tab-page h1 {
+      font-size: 48px;
+      font-weight: 300;
+      color: #e0e0e0;
     }
 
-    .quick-link-icon {
-      font-size: 24px;
-      color: #60a5fa;
+    .new-tab-search {
+      width: 500px;
+      max-width: 80%;
     }
 
-    .quick-link-title {
-      color: #d1d5db;
-      font-size: 14px;
-      font-weight: 500;
+    .new-tab-search input {
+      width: 100%;
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: none;
+      background-color: #33344d;
+      color: #e0e0e0;
+      font-size: 16px;
     }
 
-    /* Status Bar */
-    .status-bar {
-      background: #1a1a23;
-      height: 28px;
-      border-top: 1px solid #2d2d3a;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 12px;
-      font-size: 12px;
-      color: #9ca3af;
-      flex-shrink: 0;
-    }
-
-    .status-left, .status-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .loading-indicator {
-      display: none;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .loading-spinner {
-      width: 12px;
-      height: 12px;
-      border: 2px solid #3b82f6;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Settings Overlay */
+    /* Overlay / Settings */
     #overlay {
-      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
+      background-color: rgba(30, 30, 46, 0.95);
+      display: none;
       align-items: center;
       justify-content: center;
+      z-index: 1000;
     }
 
     #overlay.active {
@@ -460,1306 +272,282 @@
     }
 
     #settings {
-      background: #1a1a23;
+      background-color: #2b2b3c;
+      padding: 20px;
       border-radius: 12px;
-      width: 90%;
-      max-width: 800px;
+      width: 450px;
+      max-width: 90%;
       max-height: 90vh;
-      overflow: hidden;
-      border: 1px solid #2d2d3a;
-    }
-
-    .settings-header {
-      background: #252533;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #2d2d3a;
-    }
-
-    .settings-header h2 {
-      color: #ffffff;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .close-settings-btn {
-      background: transparent;
-      border: none;
-      color: #9ca3af;
-      font-size: 24px;
-      cursor: pointer;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      padding: 0;
-    }
-
-    .close-settings-btn:hover {
-      background: #3b82f6;
-      color: #ffffff;
-    }
-
-    .settings-tabs {
-      display: flex;
-      background: #252533;
-      border-bottom: 1px solid #2d2d3a;
-    }
-
-    .settings-tab {
-      flex: 1;
-      padding: 16px;
-      background: transparent;
-      border: none;
-      color: #9ca3af;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-bottom: 3px solid transparent;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .settings-tab.active {
-      color: #3b82f6;
-      border-bottom-color: #3b82f6;
-      background: #1a1a23;
-    }
-
-    .settings-tab:hover:not(.active) {
-      color: #ffffff;
-      background: #2d2d3a;
-    }
-
-    .settings-content {
-      padding: 24px;
-      max-height: calc(90vh - 140px);
       overflow-y: auto;
+      color: #e0e0e0;
     }
 
-    .settings-tab-content {
-      display: none;
+    #settings h3, #settings h4 {
+      text-align: center;
+      margin-bottom: 10px;
     }
 
-    .settings-tab-content.active {
-      display: block;
-    }
-
-    .setting-group {
-      margin-bottom: 32px;
-      background: #252533;
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid #2d2d3a;
-    }
-
-    .setting-group h4 {
-      color: #ffffff;
-      margin-bottom: 16px;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .settings-select, .settings-input {
+    #settings input[type="text"],
+    #settings input[type="color"],
+    #settings select {
       width: 100%;
-      padding: 12px;
-      background: #1a1a23;
-      border: 1px solid #2d2d3a;
+      padding: 8px 12px;
       border-radius: 6px;
-      color: #ffffff;
-      font-size: 14px;
-      margin-bottom: 8px;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
+      border: none;
+      margin-bottom: 10px;
+      background-color: #33344d;
+      color: #e0e0e0;
     }
 
-    .settings-select:focus, .settings-input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-    }
-
-    .setting-hide {
-      display: none;
-    }
-
-    .setting-row {
-      margin-bottom: 16px;
-    }
-
-    .setting-row label {
-      display: block;
-      color: #d1d5db;
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
-
-    .setting-description {
-      display: block;
-      color: #9ca3af;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    .setting-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      color: #d1d5db;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
-    .setting-checkbox input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #3b82f6;
-    }
-
-    .settings-btn {
-      padding: 10px 20px;
-      background: #2d2d3a;
-      border: 1px solid #3b82f6;
+    #settings button {
+      background-color: #44445c;
+      color: #e0e0e0;
+      border: none;
+      padding: 8px 14px;
       border-radius: 6px;
-      color: #3b82f6;
-      font-size: 14px;
-      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
-      margin-right: 8px;
-      margin-bottom: 8px;
-      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+      margin-right: 6px;
     }
 
-    .settings-btn:hover {
-      background: #3b82f6;
-      color: #ffffff;
+    #settings button:hover {
+      background-color: #5a5a7a;
     }
 
-    .settings-btn.primary {
-      background: #3b82f6;
-      color: #ffffff;
+    .settings-section {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #444;
     }
 
-    .settings-btn.primary:hover {
-      background: #2563eb;
+    .settings-section:last-child {
+      border-bottom: none;
     }
 
-    .setting-buttons {
+    .flex-row {
       display: flex;
+      justify-content: center;
+      gap: 6px;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
     }
 
-    .radio-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .radio-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      color: #d1d5db;
-      font-size: 14px;
-    }
-
-    .radio-label input[type="radio"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #3b82f6;
-    }
-
-    .input-with-button {
-      display: flex;
-      gap: 8px;
-    }
-
-    .input-with-button .settings-input {
-      flex: 1;
-      margin-bottom: 0;
-    }
-
-    .about-info {
-      color: #d1d5db;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .about-info p {
-      margin-bottom: 12px;
-    }
-
-    .about-info a {
-      color: #60a5fa;
-      text-decoration: none;
-    }
-
-    .about-info a:hover {
-      text-decoration: underline;
-    }
-
-    /* Side Panels */
-    .side-panel {
-      position: fixed;
-      top: 0;
-      right: -400px;
-      width: 400px;
-      height: 100%;
-      background: #1a1a23;
-      border-left: 1px solid #2d2d3a;
-      z-index: 999;
-      transition: right 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .side-panel.active {
-      right: 0;
-    }
-
-    .panel-header {
-      background: #252533;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #2d2d3a;
-    }
-
-    .panel-header h3 {
-      color: #ffffff;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .close-panel-btn {
-      background: transparent;
-      border: none;
-      color: #9ca3af;
-      font-size: 24px;
-      cursor: pointer;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      padding: 0;
-    }
-
-    .close-panel-btn:hover {
-      background: #3b82f6;
-      color: #ffffff;
-    }
-
-    .panel-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    .panel-actions {
-      padding: 20px;
-      border-top: 1px solid #2d2d3a;
-    }
-
-    .panel-btn {
-      width: 100%;
-      padding: 12px;
-      background: #3b82f6;
-      border: none;
-      border-radius: 6px;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .panel-btn:hover {
-      background: #2563eb;
-    }
-
-    .bookmarks-list, .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .bookmark-item, .history-item {
-      background: #252533;
-      border-radius: 6px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .bookmark-item:hover, .history-item:hover {
-      background: #2d2d3a;
-    }
-
-    .bookmark-icon, .history-icon {
-      width: 32px;
-      height: 32px;
-      background: #3b82f6;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    .bookmark-info, .history-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .bookmark-title, .history-title {
-      color: #ffffff;
-      font-size: 14px;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .bookmark-url, .history-url {
-      color: #9ca3af;
-      font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .empty-state {
-      text-align: center;
-      color: #9ca3af;
-      padding: 40px 20px;
-      font-size: 14px;
-    }
-
-    /* Loading Screen */
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 15, 20, 0.9);
-      z-index: 1001;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .loading-screen.active {
-      display: flex;
-    }
-
-    .loading-content {
-      text-align: center;
-    }
-
-    .loading-spinner-large {
-      width: 60px;
-      height: 60px;
-      border: 4px solid #3b82f6;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-
-    #loadingMessage {
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: 500;
-    }
-
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar {
+    #settings::-webkit-scrollbar {
       width: 8px;
-      height: 8px;
     }
 
-    ::-webkit-scrollbar-track {
-      background: #1a1a23;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #2d2d3a;
+    #settings::-webkit-scrollbar-thumb {
+      background-color: #555;
       border-radius: 4px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #3b82f6;
+    #settings ul {
+      list-style: none;
+      padding: 0;
     }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .quick-links-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      }
-
-      #settings {
-        width: 95%;
-      }
-
-      .side-panel {
-        width: 100%;
-        right: -100%;
-      }
-
-      .settings-tabs {
-        flex-wrap: wrap;
-      }
-
-      .settings-tab {
-        flex: 1 0 50%;
-      }
+    #settings li {
+      margin: 5px 0;
     }
 
-    @media (max-width: 480px) {
-      .top-nav {
-        padding: 0 8px;
-      }
+    #settings a {
+      color: #7aa2f7;
+      text-decoration: none;
+    }
 
-      .nav-center {
-        margin: 0 8px;
-      }
+    #settings a:hover {
+      text-decoration: underline;
+    }
 
-      .tab {
-        min-width: 100px;
-        padding: 8px;
-      }
-
-      .tab-title {
-        font-size: 12px;
-      }
-
-      .new-tab-content {
-        padding: 40px 16px;
-      }
-
-      .logo-text {
-        font-size: 36px;
-      }
-
-      .quick-links-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #bbb;
     }
   </style>
 </head>
-<body class="default">
-  <!-- Top Navigation Bar -->
-  <div class="top-nav">
-    <div class="nav-left">
-      <button class="nav-btn" id="backBtn" title="Back"><i class="fas fa-arrow-left"></i></button>
-      <button class="nav-btn" id="forwardBtn" title="Forward"><i class="fas fa-arrow-right"></i></button>
-      <button class="nav-btn" id="refreshBtn" title="Refresh"><i class="fas fa-redo"></i></button>
-      <div class="nav-divider"></div>
+<body>
+  <div class="browser-chrome">
+    <!-- Tab Bar -->
+    <div class="tab-bar" id="tabBar">
+      <button class="new-tab-btn" id="newTabBtn" title="New Tab">+</button>
     </div>
-    
-    <div class="nav-center">
-      <div class="url-bar-container">
-        <div class="url-bar-icons">
-          <i class="fas fa-lock" id="securityIcon" style="display:none;"></i>
-          <i class="fas fa-unlock" id="insecureIcon" style="display:none;"></i>
-        </div>
-        <form id="search" class="url-bar-form">
-          <input id="url" type="text" class="url-input" placeholder="Search or enter website address" autocomplete="off" spellcheck="false">
-        </form>
-        <div class="url-bar-actions">
-          <button class="url-action-btn" id="bookmarkBtn" title="Bookmark"><i class="far fa-star"></i></button>
-        </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+      <button class="nav-btn" id="backBtn" title="Back" disabled>
+        <i class="fa">&#xf060;</i>
+      </button>
+      <button class="nav-btn" id="forwardBtn" title="Forward" disabled>
+        <i class="fa">&#xf061;</i>
+      </button>
+      <button class="nav-btn" id="refreshBtn" title="Refresh">
+        <i class="fa">&#xf021;</i>
+      </button>
+      <div class="url-bar">
+        <i class="fa lock-icon">&#xf023;</i>
+        <input type="text" class="url-input" id="urlInput" placeholder="Search or enter URL">
       </div>
-    </div>
-    
-    <div class="nav-right">
-      <button class="nav-btn" id="newTabBtn" title="New Tab"><i class="fas fa-plus"></i></button>
-      <button class="nav-btn" id="bookmarksBtn" title="Bookmarks"><i class="fas fa-bookmark"></i></button>
-      <button class="nav-btn" id="historyBtn" title="History"><i class="fas fa-history"></i></button>
-      <div class="nav-divider"></div>
-      <button class="nav-btn" id="settingsBtn" title="Settings"><i class="fas fa-cog"></i></button>
-    </div>
-  </div>
-  
-  <!-- Tab Bar -->
-  <div class="tab-bar">
-    <div class="tabs-container">
-      <div class="tab active" data-tab-id="1">
-        <span class="tab-title">New Tab</span>
-        <button class="tab-close" data-tab-id="1">&times;</button>
-      </div>
-      <button class="add-tab-btn" id="addTabBtn" title="Add new tab">
-        <i class="fas fa-plus"></i>
+      <button class="nav-btn" id="gear" title="Settings">
+        <i class="fa">&#xf013;</i>
       </button>
     </div>
   </div>
-  
-  <!-- New Tab Page -->
-  <div class="new-tab-page active" data-tab-content="1">
-    <div class="new-tab-content">
-      <div class="logo-container">
-        <div class="logo-icon">✈️</div>
-        <h1 class="logo-text">TinyJet</h1>
-      </div>
-      <div class="search-box-container">
-        <form id="newTabSearch" class="new-tab-search-form">
-          <div class="search-input-wrapper">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="new-tab-search-input" placeholder="Search the web or enter URL" autocomplete="off" spellcheck="false">
-          </div>
-        </form>
-      </div>
-      <div class="quick-links">
-        <h3 class="quick-links-title">Quick Links</h3>
-        <div class="quick-links-grid">
-          <div class="quick-link" data-url="https://google.com">
-            <div class="quick-link-icon"><i class="fab fa-google"></i></div>
-            <span class="quick-link-title">Google</span>
-          </div>
-          <div class="quick-link" data-url="https://youtube.com">
-            <div class="quick-link-icon"><i class="fab fa-youtube"></i></div>
-            <span class="quick-link-title">YouTube</span>
-          </div>
-          <div class="quick-link" data-url="https://github.com">
-            <div class="quick-link-icon"><i class="fab fa-github"></i></div>
-            <span class="quick-link-title">GitHub</span>
-          </div>
-          <div class="quick-link" data-url="https://wikipedia.org">
-            <div class="quick-link-icon"><i class="fab fa-wikipedia-w"></i></div>
-            <span class="quick-link-title">Wikipedia</span>
-          </div>
-          <div class="quick-link" data-url="https://reddit.com">
-            <div class="quick-link-icon"><i class="fab fa-reddit"></i></div>
-            <span class="quick-link-title">Reddit</span>
-          </div>
-          <div class="quick-link" data-url="https://twitter.com">
-            <div class="quick-link-icon"><i class="fab fa-twitter"></i></div>
-            <span class="quick-link-title">Twitter</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Browser Content Area -->
-  <div class="browser-content">
-    <div class="tab-content active" data-tab-content="1">
-      <iframe class="browser-iframe" id="iframe1" data-tab-id="1"></iframe>
-    </div>
-  </div>
-  
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <div class="status-left">
-      <span id="statusText">Ready</span>
-    </div>
-    <div class="status-right">
-      <span id="pageInfo"></span>
-      <div class="loading-indicator" id="loadingIndicator">
-        <div class="loading-spinner"></div>
-      </div>
-    </div>
-  </div>
-  
+
+  <!-- Tab Contents -->
+  <div class="tabs-content" id="tabsContent"></div>
+
   <!-- Settings Overlay -->
   <div id="overlay">
     <div id="settings">
-      <div class="settings-header">
-        <h2><i class="fas fa-cog"></i> Settings</h2>
-        <button class="close-settings-btn" id="closeSettingsBtn">&times;</button>
-      </div>
+      <h3>Settings</h3>
       
-      <div class="settings-tabs">
-        <button class="settings-tab active" data-settings-tab="general">General</button>
-        <button class="settings-tab" data-settings-tab="privacy">Privacy</button>
-        <button class="settings-tab" data-settings-tab="appearance">Appearance</button>
-        <button class="settings-tab" data-settings-tab="advanced">Advanced</button>
+      <div class="settings-section">
+        <h4>WISP Server</h4>
+        <form id="wispInput">
+          <input id="websocket" type="text" placeholder="wss://gointospace.app/wisp/" value="wss://gointospace.app/wisp/">
+          <button type="submit">Set WISP</button>
+        </form>
       </div>
-      
-      <div class="settings-content">
-        <!-- General Tab -->
-        <div class="settings-tab-content active" data-settings-content="general">
-          <div class="setting-group">
-            <h4><i class="fas fa-search"></i> Search Engine</h4>
-            <select id="searchEnginePicker" class="settings-select">
-              <option value="brave">Brave (Default)</option>
-              <option value="google">Google</option>
-              <option value="bing">Bing</option>
-              <option value="duckduckgo">DuckDuckGo</option>
-              <option value="custom">Custom</option>
-            </select>
-            <div id="customSearchContainer" class="setting-hide">
-              <input id="customSearch" type="text" placeholder="https://search.example.com/search?q=%s" class="settings-input" />
-              <small class="setting-description">Use %s as placeholder for search query</small>
-            </div>
-          </div>
-          
-          <div class="setting-group">
-            <h4><i class="fas fa-home"></i> Homepage</h4>
-            <select id="homepagePicker" class="settings-select">
-              <option value="newtab">New Tab Page</option>
-              <option value="custom">Custom URL</option>
-            </select>
-            <div id="customHomepageContainer" class="setting-hide">
-              <input id="customHomepage" type="text" placeholder="https://example.com" class="settings-input" />
-            </div>
-          </div>
-          
-          <div class="setting-group">
-            <h4><i class="fas fa-download"></i> Downloads</h4>
-            <label class="setting-checkbox">
-              <input type="checkbox" id="askDownloadLocation">
-              <span>Ask where to save each file before downloading</span>
-            </label>
-          </div>
+
+      <div class="settings-section">
+        <h4>Transport Protocol</h4>
+        <div style="text-align:center;">
+          <ul style="display:inline-block; text-align:left;">
+            <li><input type="radio" name="transport" value="epoxy" checked> Epoxy (Default)</li>
+            <li><input type="radio" name="transport" value="libcurl"> Libcurl</li>
+          </ul>
         </div>
+      </div>
+
+      <div class="settings-section">
+        <h4>Search Engine</h4>
+        <select id="searchEnginePicker">
+          <option value="brave">Brave (default)</option>
+          <option value="google">Google</option>
+          <option value="bing">Bing</option>
+          <option value="duckduckgo">DuckDuckGo</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input id="customSearch" type="text" placeholder="https://search.example.com/search?q=%s" style="display:none;" />
+      </div>
+
+      <div class="settings-section">
+        <h4>Tab Cloaking</h4>
+        <label for="tabCloak">Title</label>
+        <input id="tabCloak" type="text" placeholder="Khan Academy" />
+        <label for="tabCloakIcon">Icon (URL)</label>
+        <input id="tabCloakIcon" type="text" placeholder="https://khanacademy.org/favicon.ico" />
+        <div class="flex-row">
+          <button id="saveTabCloakBtn">Save</button>
+          <button id="clearTabCloakBtn">Clear</button>
+          <button id="previewTabCloakBtn">Preview</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>TinyJet</h3>
+        <p style="text-align:center;" id="version">Loading version...</p>
+        <h6 style="font-weight:normal; text-align:center; margin-top:10px;">A simple Scramjet implementation and frontend.</h6>
         
-        <!-- Privacy Tab -->
-        <div class="settings-tab-content" data-settings-content="privacy">
-          <div class="setting-group">
-            <h4><i class="fas fa-user-secret"></i> Tab Cloaking</h4>
-            <div class="setting-row">
-              <label for="tabCloak">Tab Title</label>
-              <input id="tabCloak" type="text" placeholder="e.g., Google Docs" class="settings-input" />
-            </div>
-            <div class="setting-row">
-              <label for="tabCloakIcon">Favicon URL</label>
-              <input id="tabCloakIcon" type="text" placeholder="https://example.com/favicon.ico" class="settings-input" />
-            </div>
-            <div class="setting-buttons">
-              <button id="saveTabCloakBtn" class="settings-btn primary">Save</button>
-              <button id="clearTabCloakBtn" class="settings-btn">Clear</button>
-              <button id="previewTabCloakBtn" class="settings-btn">Preview</button>
-            </div>
-          </div>
-          
-          <div class="setting-group">
-            <h4><i class="fas fa-cookie"></i> Cookies & Cache</h4>
-            <label class="setting-checkbox">
-              <input type="checkbox" id="clearOnExit">
-              <span>Clear browsing data on exit</span>
-            </label>
-            <div class="setting-buttons">
-              <button id="clearDataBtn" class="settings-btn">Clear Now</button>
-            </div>
-          </div>
+        <h4 style="margin-top:15px;">Credits</h4>
+        <div style="text-align:center;">
+          <ul style="display:inline-block; text-align:left;">
+            <li><a href="https://github.com/Sophie">Sophie:</a> Maintainer</li>
+            <li><a href="https://github.com/xmb9">xmb9:</a> Co-maintainer</li>
+            <li><a href="https://github.com/MercuryWorkshop">Mercury Workshop:</a> Scramjet, WISP</li>
+          </ul>
         </div>
-        
-        <!-- Appearance Tab -->
-        <div class="settings-tab-content" data-settings-content="appearance">
-          <div class="setting-group">
-            <h4><i class="fas fa-palette"></i> Theme</h4>
-            <select id="themePicker" class="settings-select">
-              <option value="default">Default Dark</option>
-              <option value="light">Light</option>
-              <option value="latte">Catppuccin Latte</option>
-              <option value="frappe">Catppuccin Frappe</option>
-              <option value="macchiato">Catppuccin Macchiato</option>
-              <option value="mocha">Catppuccin Mocha</option>
-              <option value="mrworkshop">Mr. Workshop</option>
-              <option value="aerialite">Aerialite Labs</option>
-              <option value="custom">Custom Theme</option>
-            </select>
-            
-            <div id="customThemeSection" class="setting-hide">
-              <div class="setting-row">
-                <label for="customThemeName">Theme Name</label>
-                <input id="customThemeName" type="text" placeholder="My Theme" class="settings-input" />
-              </div>
-              <div class="setting-row">
-                <label for="customThemeBase">Primary Color</label>
-                <input id="customThemeBase" type="color" value="#1e1e2e" />
-              </div>
-              <div class="setting-row">
-                <label for="customThemeSurface">Secondary Color</label>
-                <input id="customThemeSurface" type="color" value="#2b2b3c" />
-              </div>
-              <div class="setting-row">
-                <label for="customThemeText">Text Color</label>
-                <input id="customThemeText" type="color" value="#e0e0e0" />
-              </div>
-              <div class="setting-buttons">
-                <button id="saveCustomThemeBtn" class="settings-btn primary">Save Theme</button>
-                <button id="applyCustomThemePreviewBtn" class="settings-btn">Preview</button>
-              </div>
-              
-              <div class="setting-row">
-                <label for="customThemesList">Saved Themes</label>
-                <select id="customThemesList" class="settings-select"></select>
-              </div>
-              <div class="setting-buttons">
-                <button id="applyCustomThemeBtn" class="settings-btn primary">Apply</button>
-                <button id="deleteCustomThemeBtn" class="settings-btn">Delete</button>
-              </div>
-            </div>
-          </div>
-          
-          <div class="setting-group">
-            <h4><i class="fas fa-border-style"></i> Interface</h4>
-            <label class="setting-checkbox">
-              <input type="checkbox" id="compactMode">
-              <span>Compact mode (smaller UI elements)</span>
-            </label>
-            <label class="setting-checkbox">
-              <input type="checkbox" id="showBookmarksBar">
-              <span>Show bookmarks bar</span>
-            </label>
-          </div>
-        </div>
-        
-        <!-- Advanced Tab -->
-        <div class="settings-tab-content" data-settings-content="advanced">
-          <div class="setting-group">
-            <h4><i class="fas fa-server"></i> Proxy Settings</h4>
-            <div class="setting-row">
-              <label for="transportProtocol">Transport Protocol</label>
-              <div class="radio-group">
-                <label class="radio-label">
-                  <input type="radio" name="transport" value="epoxy" checked> Epoxy (Default)
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="transport" value="libcurl"> Libcurl
-                </label>
-              </div>
-            </div>
-            
-            <div class="setting-row">
-              <label for="websocket">WISP Server</label>
-              <div class="input-with-button">
-                <input id="websocket" type="text" placeholder="wss://gointospace.app/wisp/" class="settings-input" />
-                <button id="setWispBtn" class="settings-btn primary">Set</button>
-              </div>
-              <small class="setting-description">WebSocket proxy server for bypassing restrictions</small>
-            </div>
-          </div>
-          
-          <div class="setting-group">
-            <h4><i class="fas fa-code"></i> Developer</h4>
-            <label class="setting-checkbox">
-              <input type="checkbox" id="devTools">
-              <span>Enable Developer Tools (F12)</span>
-            </label>
-            <div class="setting-buttons">
-              <button id="clearCacheBtn" class="settings-btn">Clear Cache</button>
-              <button id="resetSettingsBtn" class="settings-btn">Reset Settings</button>
-            </div>
-          </div>
-          
-          <div class="setting-group">
-            <h4><i class="fas fa-info-circle"></i> About</h4>
-            <div class="about-info">
-              <p><strong>TinyJet Browser</strong></p>
-              <p id="version">Version: Loading...</p>
-              <p>A lightweight, privacy-focused browser with built-in proxy capabilities.</p>
-              <p>Developed by <a href="https://aerialite.dev" target="_blank">Aerialite Labs</a></p>
-            </div>
-          </div>
-        </div>
+        <p style="text-align:center; margin-top:10px;">Developed by <a href="https://aerialite.dev">Aerialite Labs</a></p>
       </div>
-    </div>
-  </div>
-  
-  <!-- Bookmarks Panel -->
-  <div class="side-panel" id="bookmarksPanel">
-    <div class="panel-header">
-      <h3><i class="fas fa-bookmark"></i> Bookmarks</h3>
-      <button class="close-panel-btn" data-panel="bookmarksPanel">&times;</button>
-    </div>
-    <div class="panel-content">
-      <div class="bookmarks-list" id="bookmarksList">
-        <div class="empty-state">No bookmarks yet</div>
-      </div>
-      <div class="panel-actions">
-        <button class="panel-btn" id="addBookmarkBtn"><i class="fas fa-plus"></i> Add Current Page</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- History Panel -->
-  <div class="side-panel" id="historyPanel">
-    <div class="panel-header">
-      <h3><i class="fas fa-history"></i> History</h3>
-      <button class="close-panel-btn" data-panel="historyPanel">&times;</button>
-    </div>
-    <div class="panel-content">
-      <div class="history-list" id="historyList">
-        <div class="empty-state">No browsing history</div>
-      </div>
-      <div class="panel-actions">
-        <button class="panel-btn" id="clearHistoryBtn"><i class="fas fa-trash"></i> Clear History</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Loading Screen -->
-  <div class="loading-screen" id="loadingScreen">
-    <div class="loading-content">
-      <div class="loading-spinner-large"></div>
-      <p id="loadingMessage">Loading...</p>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js" defer></script>
-  <script type="module" defer>
-    // Simple browser implementation - will show UI immediately
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Browser loading...');
-      
-      // Initialize basic UI functionality first
-      initBasicUI();
-      
-      // Then load the proxy system
-      initProxySystem();
-    });
-    
-    function initBasicUI() {
-      console.log('Initializing basic UI...');
-      
-      // Get DOM elements
-      const elements = {
-        backBtn: document.getElementById('backBtn'),
-        forwardBtn: document.getElementById('forwardBtn'),
-        refreshBtn: document.getElementById('refreshBtn'),
-        newTabBtn: document.getElementById('newTabBtn'),
-        bookmarksBtn: document.getElementById('bookmarksBtn'),
-        historyBtn: document.getElementById('historyBtn'),
-        settingsBtn: document.getElementById('settingsBtn'),
-        addTabBtn: document.getElementById('addTabBtn'),
-        urlInput: document.getElementById('url'),
-        searchForm: document.getElementById('search'),
-        newTabSearchForm: document.getElementById('newTabSearch'),
-        newTabSearchInput: document.querySelector('.new-tab-search-input'),
-        bookmarkBtn: document.getElementById('bookmarkBtn'),
-        overlay: document.getElementById('overlay'),
-        settings: document.getElementById('settings'),
-        closeSettingsBtn: document.getElementById('closeSettingsBtn'),
-        bookmarksPanel: document.getElementById('bookmarksPanel'),
-        historyPanel: document.getElementById('historyPanel'),
-        quickLinks: document.querySelectorAll('.quick-link'),
-        addBookmarkBtn: document.getElementById('addBookmarkBtn'),
-        clearHistoryBtn: document.getElementById('clearHistoryBtn'),
-        setWispBtn: document.getElementById('setWispBtn'),
-        saveTabCloakBtn: document.getElementById('saveTabCloakBtn'),
-        clearTabCloakBtn: document.getElementById('clearTabCloakBtn'),
-        previewTabCloakBtn: document.getElementById('previewTabCloakBtn')
-      };
-      
-      // Simple tab management
-      let currentTabId = 1;
-      let tabs = [{ id: 1, title: "New Tab", url: "", favicon: "", loading: false }];
-      
-      // Update tab UI
-      function updateTabsUI() {
-        const tabsContainer = document.querySelector('.tabs-container');
-        const addTabBtn = tabsContainer.querySelector('.add-tab-btn');
-        
-        // Remove existing tabs (except add button)
-        tabsContainer.innerHTML = '';
-        
-        // Add tabs
-        tabs.forEach(tab => {
-          const tabElement = document.createElement('div');
-          tabElement.className = `tab ${tab.active ? 'active' : ''}`;
-          tabElement.setAttribute('data-tab-id', tab.id);
-          
-          tabElement.innerHTML = `
-            <span class="tab-title">${escapeHtml(tab.title)}</span>
-            <button class="tab-close" data-tab-id="${tab.id}">&times;</button>
-          `;
-          
-          tabsContainer.appendChild(tabElement);
-        });
-        
-        // Re-add add tab button
-        tabsContainer.appendChild(addTabBtn);
-      }
-      
-      // Switch tab
-      function switchTab(tabId) {
-        tabs.forEach(tab => {
-          tab.active = tab.id === tabId;
-        });
-        
-        currentTabId = tabId;
-        const tab = tabs.find(t => t.id === tabId);
-        
-        // Update UI
-        updateTabsUI();
-        
-        // Show/hide new tab page
-        const newTabPage = document.querySelector('.new-tab-page');
-        if (!tab.url || tab.url === '') {
-          newTabPage.classList.add('active');
-          elements.urlInput.value = '';
-          elements.newTabSearchInput.value = '';
-        } else {
-          newTabPage.classList.remove('active');
-          elements.urlInput.value = tab.url;
-        }
-      }
-      
-      // Create new tab
-      function createNewTab() {
-        const newTabId = tabs.length > 0 ? Math.max(...tabs.map(t => t.id)) + 1 : 1;
-        const newTab = {
-          id: newTabId,
-          title: "New Tab",
-          url: "",
-          favicon: "",
-          loading: false
-        };
-        
-        tabs.push(newTab);
-        updateTabsUI();
-        switchTab(newTabId);
-      }
-      
-      // Close tab
-      function closeTab(tabId) {
-        if (tabs.length <= 1) return;
-        
-        const tabIndex = tabs.findIndex(t => t.id === tabId);
-        if (tabIndex === -1) return;
-        
-        tabs.splice(tabIndex, 1);
-        
-        let newTabId = currentTabId;
-        if (currentTabId === tabId) {
-          newTabId = tabs[Math.max(0, tabIndex - 1)].id;
-        }
-        
-        updateTabsUI();
-        switchTab(newTabId);
-      }
-      
-      // Navigate to URL
-      function navigateTo(input) {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (!tab) return;
-        
-        let url;
-        
-        // Check if input is a URL
-        try {
-          url = new URL(input);
-          if (!url.protocol.startsWith('http')) {
-            url = new URL('https://' + input);
-          }
-        } catch {
-          // If not a valid URL, treat as search
-          const searchTemplate = 'https://www.google.com/search?q=%s';
-          url = new URL(searchTemplate.replace('%s', encodeURIComponent(input)));
-        }
-        
-        const finalUrl = url.toString();
-        
-        // Update tab state
-        tab.url = finalUrl;
-        tab.title = 'Loading...';
-        
-        // Update UI
-        updateTabsUI();
-        elements.urlInput.value = finalUrl;
-        
-        // Hide new tab page
-        document.querySelector('.new-tab-page').classList.remove('active');
-        
-        // Load in iframe
-        const iframe = document.getElementById(`iframe${currentTabId}`);
-        if (iframe) {
-          // Show loading
-          document.getElementById('statusText').textContent = 'Loading...';
-          document.getElementById('loadingIndicator').style.display = 'flex';
-          
-          iframe.src = finalUrl;
-          
-          // When iframe loads
-          iframe.onload = function() {
-            try {
-              tab.title = iframe.contentWindow.document.title || finalUrl;
-              updateTabsUI();
-              document.getElementById('statusText').textContent = 'Loaded';
-            } catch (e) {
-              tab.title = finalUrl;
-              updateTabsUI();
-              document.getElementById('statusText').textContent = 'Loaded';
-            }
-            document.getElementById('loadingIndicator').style.display = 'none';
-          };
-          
-          iframe.onerror = function() {
-            tab.title = 'Error loading page';
-            updateTabsUI();
-            document.getElementById('statusText').textContent = 'Error loading page';
-            document.getElementById('loadingIndicator').style.display = 'none';
-          };
-        }
-      }
-      
-      // Quick links navigation
-      elements.quickLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const url = e.currentTarget.getAttribute('data-url');
-          navigateTo(url);
-        });
-      });
-      
-      // URL bar form submission
-      elements.searchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        navigateTo(elements.urlInput.value);
-      });
-      
-      elements.newTabSearchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        navigateTo(elements.newTabSearchInput.value);
-      });
-      
-      // Navigation buttons
-      elements.backBtn.addEventListener('click', () => {
-        // Simple back navigation - would need history tracking for full implementation
-        document.getElementById('statusText').textContent = 'Back button clicked';
-      });
-      
-      elements.forwardBtn.addEventListener('click', () => {
-        document.getElementById('statusText').textContent = 'Forward button clicked';
-      });
-      
-      elements.refreshBtn.addEventListener('click', () => {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (tab && tab.url) {
-          navigateTo(tab.url);
-        }
-      });
-      
-      // Tab management
-      elements.newTabBtn.addEventListener('click', createNewTab);
-      elements.addTabBtn.addEventListener('click', createNewTab);
-      
-      // Tab click events
-      document.addEventListener('click', (e) => {
-        // Tab switching
-        if (e.target.closest('.tab')) {
-          const tab = e.target.closest('.tab');
-          const tabId = parseInt(tab.getAttribute('data-tab-id'));
-          switchTab(tabId);
-        }
-        
-        // Tab closing
-        if (e.target.closest('.tab-close')) {
-          const tabId = parseInt(e.target.closest('.tab-close').getAttribute('data-tab-id'));
-          closeTab(tabId);
-          e.stopPropagation();
-        }
-      });
-      
-      // Panels
-      elements.bookmarksBtn.addEventListener('click', () => {
-        elements.bookmarksPanel.classList.toggle('active');
-      });
-      
-      elements.historyBtn.addEventListener('click', () => {
-        elements.historyPanel.classList.toggle('active');
-      });
-      
-      elements.settingsBtn.addEventListener('click', () => {
-        elements.overlay.classList.toggle('active');
-      });
-      
-      elements.closeSettingsBtn.addEventListener('click', () => {
-        elements.overlay.classList.remove('active');
-      });
-      
-      elements.overlay.addEventListener('click', (e) => {
-        if (e.target === elements.overlay) {
-          elements.overlay.classList.remove('active');
-        }
-      });
-      
-      // Close panel buttons
-      document.querySelectorAll('.close-panel-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const panel = e.target.getAttribute('data-panel');
-          document.getElementById(panel).classList.remove('active');
-        });
-      });
-      
-      // Settings tabs
-      document.querySelectorAll('.settings-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-          const tabName = e.target.getAttribute('data-settings-tab');
-          
-          // Update tab buttons
-          document.querySelectorAll('.settings-tab').forEach(t => {
-            t.classList.toggle('active', t.getAttribute('data-settings-tab') === tabName);
-          });
-          
-          // Update content
-          document.querySelectorAll('.settings-tab-content').forEach(content => {
-            content.classList.toggle('active', content.getAttribute('data-settings-content') === tabName);
-          });
-        });
-      });
-      
-      // Theme picker
-      const themePicker = document.getElementById('themePicker');
-      themePicker.addEventListener('change', (e) => {
-        const theme = e.target.value;
-        document.body.className = theme;
-        localStorage.setItem('selectedTheme', theme);
-      });
-      
-      // Load saved theme
-      const savedTheme = localStorage.getItem('selectedTheme') || 'default';
-      document.body.className = savedTheme;
-      themePicker.value = savedTheme;
-      
-      // Utility function
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      }
-      
-      console.log('Basic UI initialized');
-    }
-    
-    async function initProxySystem() {
-      console.log('Initializing proxy system...');
-      
+  <script src="https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js"></script>
+  <script type="module">
+    import * as BareMux from "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/index.mjs";
+
+    // Fetch version
+    (async function fetchVersion() {
       try {
-        // Try to load the proxy system
-        const module = await import("https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/index.mjs");
-        console.log('Proxy module loaded successfully');
-        
-        // Initialize Scramjet
-        const { ScramjetController } = $scramjetLoadController();
-        const scramjet = new ScramjetController({ 
-          files: { 
-            wasm: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/wasm.wasm", 
-            all: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js", 
-            sync: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.sync.js" 
-          } 
-        });
-        
-        try {
-          scramjet.init();
-          console.log('Scramjet initialized successfully');
-          
-          // Update status
-          document.getElementById('statusText').textContent = 'Proxy system ready';
-          
-          // Override the simple navigateTo function with proxy-enabled version
-          window.navigateTo = function(input) {
-            const tab = window.tabs.find(t => t.id === window.currentTabId);
-            if (!tab) return;
-            
-            let url;
-            
-            // Check if input is a URL
-            try {
-              url = new URL(input);
-              if (!url.protocol.startsWith('http')) {
-                url = new URL('https://' + input);
-              }
-            } catch {
-              // If not a valid URL, treat as search
-              const searchTemplate = 'https://www.google.com/search?q=%s';
-              url = new URL(searchTemplate.replace('%s', encodeURIComponent(input)));
-            }
-            
-            const finalUrl = url.toString();
-            
-            // Use Scramjet to encode the URL
-            const encodedUrl = scramjet.encodeUrl(finalUrl);
-            
-            // Update tab state
-            tab.url = finalUrl;
-            tab.title = 'Loading...';
-            
-            // Update UI
-            window.updateTabsUI();
-            document.getElementById('url').value = finalUrl;
-            
-            // Hide new tab page
-            document.querySelector('.new-tab-page').classList.remove('active');
-            
-            // Load in iframe with proxy
-            const iframe = document.getElementById(`iframe${window.currentTabId}`);
-            if (iframe) {
-              document.getElementById('statusText').textContent = 'Loading through proxy...';
-              document.getElementById('loadingIndicator').style.display = 'flex';
-              
-              iframe.src = encodedUrl;
-              
-              iframe.onload = function() {
-                try {
-                  tab.title = iframe.contentWindow.document.title || finalUrl;
-                  window.updateTabsUI();
-                  document.getElementById('statusText').textContent = 'Loaded via proxy';
-                } catch (e) {
-                  tab.title = finalUrl;
-                  window.updateTabsUI();
-                  document.getElementById('statusText').textContent = 'Loaded via proxy';
-                }
-                document.getElementById('loadingIndicator').style.display = 'none';
-              };
-              
-              iframe.onerror = function() {
-                tab.title = 'Proxy error';
-                window.updateTabsUI();
-                document.getElementById('statusText').textContent = 'Proxy connection failed';
-                document.getElementById('loadingIndicator').style.display = 'none';
-              };
-            }
-          };
-          
-          console.log('Proxy system fully initialized');
-          
-        } catch (e) {
-          console.error('Scramjet initialization failed:', e);
-          document.getElementById('statusText').textContent = 'Proxy system failed - using direct connections';
+        const resp = await fetch('https://api.github.com/repos/AerialiteLabs/tinyjet-frontend/commits?per_page=1');
+        if (resp.ok) {
+          const data = await resp.json();
+          const sha = Array.isArray(data) && data[0]?.sha ? data[0].sha : '';
+          document.getElementById('version').textContent = sha ? sha.slice(0, 7) : 'Unknown';
         }
-        
       } catch (e) {
-        console.error('Failed to load proxy module:', e);
-        document.getElementById('statusText').textContent = 'Using direct connections';
+        document.getElementById('version').textContent = 'Unable to retrieve';
       }
+    })();
+
+    const { ScramjetController } = $scramjetLoadController();
+    const scramjet = new ScramjetController({
+      files: {
+        wasm: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/wasm.wasm",
+        all: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js",
+        sync: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.sync.js"
+      }
+    });
+
+    scramjet.init();
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+
+    const bareworker = `data:application/javascript;base64,IWZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGU9TWVzc2FnZVBvcnQucHJvdG90eXBlLnBvc3RNZXNzYWdlO2xldCB0PW51bGw7ZnVuY3Rpb24gYShlLHQsYSl7Y29uc29sZS5lcnJvcihgZXJyb3Igd2hpbGUgcHJvY2Vzc2luZyAnJHthfSc6IGAsdCksZS5wb3N0TWVzc2FnZSh7dHlwZToiZXJyb3IiLGVycm9yOnR9KX1hc3luYyBmdW5jdGlvbiBuKGEsbixzKXtjb25zdCBvPWF3YWl0IHMucmVxdWVzdChuZXcgVVJMKGEuZmV0Y2gucmVtb3RlKSxhLmZldGNoLm1ldGhvZCxhLmZldGNoLmJvZHksYS5mZXRjaC5oZWFkZXJzLG51bGwpO2lmKCFmdW5jdGlvbigpe2lmKG51bGw9PT10KXtjb25zdCBhPW5ldyBNZXNzYWdlQ2hhbm5lbCxuPW5ldyBSZWFkYWJsZVN0cmVhbTtsZXQgczt0cnl7ZS5jYWxsKGEucG9ydDEsbixbbl0pLHM9ITB9Y2F0Y2goZSl7cz0hMX1yZXR1cm4gdD1zLHN9cmV0dXJuIHR9KCkmJm8uYm9keSBpbnN0YW5jZW9mIFJlYWRhYmxlU3RyZWFtKXtjb25zdCBlPW5ldyBSZXNwb25zZShvLmJvZHkpO28uYm9keT1hd2FpdCBlLmFycmF5QnVmZmVyKCl9by5ib2R5IGluc3RhbmNlb2YgUmVhZGFibGVTdHJlYW18fG8uYm9keSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyP2UuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30sW28uYm9keV0pOmUuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30pfWxldCBzPW51bGwsbz0iIjtmdW5jdGlvbiBjKCl7cmV0dXJuIG5ldyBFcnJvcigidGhlcmUgYXJlIG5vIGJhcmUgY2xpZW50cyIse2NhdXNlOiJObyBCYXJlVHJhbnNwb3J0IHdhcyBzZXQuIFRyeSBjcmVhdGluZyBhIEJhcmVNdXhDb25uZWN0aW9uIGFuZCBjYWxsaW5nIHNldFRyYW5zcG9ydCgpIG9yIHNldE1hbnVhbFRyYW5zcG9ydCgpIG9uIGl0IGJlZm9yZSB1c2luZyBCYXJlQ2xpZW50LiJ9KX1mdW5jdGlvbiByKHQsYSl7Y29uc3Qgbj1zO2xldCBvPVthXTt0LmZldGNoPy5ib2R5JiZvLnB1c2godC5mZXRjaC5ib2R5KSx0LndlYnNvY2tldD8uY2hhbm5lbCYmby5wdXNoKHQud2Vic29ja2V0LmNoYW5uZWwpLGUuY2FsbChuLHttZXNzYWdlOnQscG9ydDphfSxvKX1mdW5jdGlvbiBsKHQpe3Qub25tZXNzYWdlPWFzeW5jIHQ9Pntjb25zdCBsPXQuZGF0YS5wb3J0LGk9dC5kYXRhLm1lc3NhZ2U7aWYoInBpbmciPT09aS50eXBlKWUuY2FsbChsLHt0eXBlOiJwb25nIn0pO2Vsc2UgaWYoInNldCI9PT1pLnR5cGUpdHJ5e2NvbnN0IHQ9YXN5bmMgZnVuY3Rpb24oKXt9LmNvbnN0cnVjdG9yO2lmKCJiYXJlLW11eC1yZW1vdGUiPT09aS5jbGllbnQuZnVuY3Rpb24pcz1pLmNsaWVudC5hcmdzWzBdLG89YGJhcmUtbXV4LXJlbW90ZSAoJHtpLmNsaWVudC5hcmdzWzFdfSlgO2Vsc2V7Y29uc3QgZT1uZXcgdChpLmNsaWVudC5mdW5jdGlvbiksW2Esbl09YXdhaXQgZSgpO3M9bmV3IGEoLi4uaS5jbGllbnQuYXJncyksbz1ufWNvbnNvbGUubG9nKCJzZXQgdHJhbnNwb3J0IHRvICIscyxvKSxlLmNhbGwobCx7dHlwZToic2V0In0pfWNhdGNoKGUpe2EobCxlLCJzZXQiKX1lbHNlIGlmKCJnZXQiPT09aS50eXBlKWwucG9zdE1lc3NhZ2Uoe3R5cGU6ImdldCIsbmFtZTpvfSk7ZWxzZSBpZigiZmV0Y2giPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBuKGksbCxzKX1jYXRjaChlKXthKGwsZSwiZmV0Y2giKX1lbHNlIGlmKCJ3ZWJzb2NrZXQiPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBhc3luYyBmdW5jdGlvbih0LGEsbil7Y29uc3RbcyxvXT1uLmNvbm5lY3QobmV3IFVSTCh0LndlYnNvY2tldC51cmwpLHQud2Vic29ja2V0LnByb3RvY29scyx0LndlYnNvY2tldC5yZXF1ZXN0SGVhZGVycywoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJvcGVuIixhcmdzOlthXX0pfSksKGE9PnthIGluc3RhbmNlb2YgQXJyYXlCdWZmZXI/ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6Im1lc3NhZ2UiLGFyZ3M6W2FdfSxbYV0pOmUuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJtZXNzYWdlIixhcmdzOlthXX0pfSksKChhLG4pPT57ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6ImNsb3NlIixhcmdzOlthLG5dfSl9KSwoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJlcnJvciIsYXJnczpbYV19KX0pKTt0LndlYnNvY2tldC5jaGFubmVsLm9ubWVzc2FnZT1lPT57ImRhdGEiPT09ZS5kYXRhLnR5cGU/cyhlLmRhdGEuZGF0YSk6ImNsb3NlIj09PWUuZGF0YS50eXBlJiZvKGUuZGF0YS5jbG9zZUNvZGUsZS5kYXRhLmNsb3NlUmVhc29uKX0sZS5jYWxsKGEse3R5cGU6IndlYnNvY2tldCJ9KX0oaSxsLHMpfWNhdGNoKGUpe2EobCxlLCJ3ZWJzb2NrZXQiKX19fW5ldyBCcm9hZGNhc3RDaGFubmVsKCJiYXJlLW11eCIpLnBvc3RNZXNzYWdlKHt0eXBlOiJyZWZyZXNoUG9ydCJ9KSxzZWxmLm9uY29ubmVjdD1lPT57bChlLnBvcnRzWzBdKX0sY29uc29sZS5kZWJ1ZygiYmFyZS1tdXg6IHJ1bm5pbmcgdjIuMS43IChidWlsZCBjNTZkMjg2KSIpfSgpOwovLyMgc291cmNlTWFwcGluZ1VSTD13b3JrZXIuanMubWFw`;
+    const connection = new BareMux.BareMuxConnection(bareworker);
+
+    // Tab management
+    let tabIdCounter = 0;
+    let tabs = [];
+    let activeTabId = null;
+
+    const searchTemplates = {
+      google: "https://www.google.com/search?q=%s",
+      bing: "https://www.bing.com/search?q=%s",
+      duckduckgo: "https://duckduckgo.com/?q=%s",
+      brave: "https://search.brave.com/search?q=%s"
+    };
+
+    function search(input) {
+      try {
+        return new URL(input).toString();
+      } catch (err) {}
+
+      try {
+        let url = new URL(`http://${input}`);
+        if (url.hostname.includes(".")) return url.toString();
+      } catch (err) {}
+
+      const engine = localStorage.getItem('selectedSearchEngine') || 'brave';
+      let template;
+      if (engine === 'custom') {
+        template = document.getElementById('customSearch').value.trim() || localStorage.getItem('customSearchTemplate') || searchTemplates.brave;
+      } else {
+        template = searchTemplates[engine] || searchTemplates.brave;
+      }
+      return template.replace("%s", encodeURIComponent(input));
     }
-  </script>
-</body>
-</html>
+
+    function createTab(url = null, switchTo = true) {
+      const tabId = ++tabIdCounter;
+      const tab = {
+        id: tabId,
+        title: url ? 'Loading...' : 'New Tab',
+        url: url,
+        favicon: 'https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico'
+      };
+
+      tabs.push(tab);
+
+      // Create tab element
+      const tabEl = document.createElement('div');
+      tabEl.className = 'tab';
+      tabEl.dataset.tabId = tabId;
+      tabEl.innerHTML = `
+        <img class="tab-favicon" src="${tab.favicon}" alt="">
+        <span class="tab-title">${tab.title}</span>
+        <span class="tab-close">×</span>
+      `;
+
+      tabEl.querySelector('.tab-title').addEventListener('click', () => switchTab(tabId));
+      tabEl.querySelector('.tab-
