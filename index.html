@@ -26,13 +26,11 @@
       overflow: hidden;
     }
 
-    /* Browser chrome */
     .browser-chrome {
       background-color: #2a2a3b;
       border-bottom: 1px solid #444;
     }
 
-    /* Tab bar */
     .tab-bar {
       display: flex;
       align-items: center;
@@ -125,7 +123,6 @@
       background-color: #44445c;
     }
 
-    /* Navigation bar */
     .nav-bar {
       display: flex;
       align-items: center;
@@ -195,7 +192,6 @@
       background-color: #44445c;
     }
 
-    /* Tab content area */
     .tabs-content {
       flex: 1;
       position: relative;
@@ -253,7 +249,6 @@
       font-size: 16px;
     }
 
-    /* Overlay / Settings */
     #overlay {
       position: fixed;
       top: 0;
@@ -288,7 +283,6 @@
     }
 
     #settings input[type="text"],
-    #settings input[type="color"],
     #settings select {
       width: 100%;
       padding: 8px 12px;
@@ -368,12 +362,10 @@
 </head>
 <body>
   <div class="browser-chrome">
-    <!-- Tab Bar -->
     <div class="tab-bar" id="tabBar">
       <button class="new-tab-btn" id="newTabBtn" title="New Tab">+</button>
     </div>
 
-    <!-- Navigation Bar -->
     <div class="nav-bar">
       <button class="nav-btn" id="backBtn" title="Back" disabled>
         <i class="fa">&#xf060;</i>
@@ -394,10 +386,8 @@
     </div>
   </div>
 
-  <!-- Tab Contents -->
   <div class="tabs-content" id="tabsContent"></div>
 
-  <!-- Settings Overlay -->
   <div id="overlay">
     <div id="settings">
       <h3>Settings</h3>
@@ -433,22 +423,9 @@
       </div>
 
       <div class="settings-section">
-        <h4>Tab Cloaking</h4>
-        <label for="tabCloak">Title</label>
-        <input id="tabCloak" type="text" placeholder="Khan Academy" />
-        <label for="tabCloakIcon">Icon (URL)</label>
-        <input id="tabCloakIcon" type="text" placeholder="https://khanacademy.org/favicon.ico" />
-        <div class="flex-row">
-          <button id="saveTabCloakBtn">Save</button>
-          <button id="clearTabCloakBtn">Clear</button>
-          <button id="previewTabCloakBtn">Preview</button>
-        </div>
-      </div>
-
-      <div class="settings-section">
         <h3>TinyJet</h3>
-        <p style="text-align:center;" id="version">Loading version...</p>
-        <h6 style="font-weight:normal; text-align:center; margin-top:10px;">A simple Scramjet implementation and frontend.</h6>
+        <p style="text-align:center;" id="version">Loading...</p>
+        <h6 style="font-weight:normal; text-align:center; margin-top:10px;">A simple Scramjet proxy implementation.</h6>
         
         <h4 style="margin-top:15px;">Credits</h4>
         <div style="text-align:center;">
@@ -458,7 +435,7 @@
             <li><a href="https://github.com/MercuryWorkshop">Mercury Workshop:</a> Scramjet, WISP</li>
           </ul>
         </div>
-        <p style="text-align:center; margin-top:10px;">Developed by <a href="https://aerialite.dev">Aerialite Labs</a></p>
+        <p style="text-align:center; margin-top:10px;">By <a href="https://aerialite.dev">Aerialite Labs</a></p>
       </div>
     </div>
   </div>
@@ -467,13 +444,12 @@
   <script type="module">
     import * as BareMux from "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/index.mjs";
 
-    // Fetch version
     (async function fetchVersion() {
       try {
         const resp = await fetch('https://api.github.com/repos/AerialiteLabs/tinyjet-frontend/commits?per_page=1');
         if (resp.ok) {
           const data = await resp.json();
-          const sha = Array.isArray(data) && data[0]?.sha ? data[0].sha : '';
+          const sha = data[0]?.sha;
           document.getElementById('version').textContent = sha ? sha.slice(0, 7) : 'Unknown';
         }
       } catch (e) {
@@ -493,10 +469,9 @@
     scramjet.init();
     navigator.serviceWorker.register("./sw.js").catch(() => {});
 
-    const bareworker = `data:application/javascript;base64,IWZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGU9TWVzc2FnZVBvcnQucHJvdG90eXBlLnBvc3RNZXNzYWdlO2xldCB0PW51bGw7ZnVuY3Rpb24gYShlLHQsYSl7Y29uc29sZS5lcnJvcihgZXJyb3Igd2hpbGUgcHJvY2Vzc2luZyAnJHthfSc6IGAsdCksZS5wb3N0TWVzc2FnZSh7dHlwZToiZXJyb3IiLGVycm9yOnR9KX1hc3luYyBmdW5jdGlvbiBuKGEsbixzKXtjb25zdCBvPWF3YWl0IHMucmVxdWVzdChuZXcgVVJMKGEuZmV0Y2gucmVtb3RlKSxhLmZldGNoLm1ldGhvZCxhLmZldGNoLmJvZHksYS5mZXRjaC5oZWFkZXJzLG51bGwpO2lmKCFmdW5jdGlvbigpe2lmKG51bGw9PT10KXtjb25zdCBhPW5ldyBNZXNzYWdlQ2hhbm5lbCxuPW5ldyBSZWFkYWJsZVN0cmVhbTtsZXQgczt0cnl7ZS5jYWxsKGEucG9ydDEsbixbbl0pLHM9ITB9Y2F0Y2goZSl7cz0hMX1yZXR1cm4gdD1zLHN9cmV0dXJuIHR9KCkmJm8uYm9keSBpbnN0YW5jZW9mIFJlYWRhYmxlU3RyZWFtKXtjb25zdCBlPW5ldyBSZXNwb25zZShvLmJvZHkpO28uYm9keT1hd2FpdCBlLmFycmF5QnVmZmVyKCl9by5ib2R5IGluc3RhbmNlb2YgUmVhZGFibGVTdHJlYW18fG8uYm9keSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyP2UuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30sW28uYm9keV0pOmUuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30pfWxldCBzPW51bGwsbz0iIjtmdW5jdGlvbiBjKCl7cmV0dXJuIG5ldyBFcnJvcigidGhlcmUgYXJlIG5vIGJhcmUgY2xpZW50cyIse2NhdXNlOiJObyBCYXJlVHJhbnNwb3J0IHdhcyBzZXQuIFRyeSBjcmVhdGluZyBhIEJhcmVNdXhDb25uZWN0aW9uIGFuZCBjYWxsaW5nIHNldFRyYW5zcG9ydCgpIG9yIHNldE1hbnVhbFRyYW5zcG9ydCgpIG9uIGl0IGJlZm9yZSB1c2luZyBCYXJlQ2xpZW50LiJ9KX1mdW5jdGlvbiByKHQsYSl7Y29uc3Qgbj1zO2xldCBvPVthXTt0LmZldGNoPy5ib2R5JiZvLnB1c2godC5mZXRjaC5ib2R5KSx0LndlYnNvY2tldD8uY2hhbm5lbCYmby5wdXNoKHQud2Vic29ja2V0LmNoYW5uZWwpLGUuY2FsbChuLHttZXNzYWdlOnQscG9ydDphfSxvKX1mdW5jdGlvbiBsKHQpe3Qub25tZXNzYWdlPWFzeW5jIHQ9Pntjb25zdCBsPXQuZGF0YS5wb3J0LGk9dC5kYXRhLm1lc3NhZ2U7aWYoInBpbmciPT09aS50eXBlKWUuY2FsbChsLHt0eXBlOiJwb25nIn0pO2Vsc2UgaWYoInNldCI9PT1pLnR5cGUpdHJ5e2NvbnN0IHQ9YXN5bmMgZnVuY3Rpb24oKXt9LmNvbnN0cnVjdG9yO2lmKCJiYXJlLW11eC1yZW1vdGUiPT09aS5jbGllbnQuZnVuY3Rpb24pcz1pLmNsaWVudC5hcmdzWzBdLG89YGJhcmUtbXV4LXJlbW90ZSAoJHtpLmNsaWVudC5hcmdzWzFdfSlgO2Vsc2V7Y29uc3QgZT1uZXcgdChpLmNsaWVudC5mdW5jdGlvbiksW2Esbl09YXdhaXQgZSgpO3M9bmV3IGEoLi4uaS5jbGllbnQuYXJncyksbz1ufWNvbnNvbGUubG9nKCJzZXQgdHJhbnNwb3J0IHRvICIscyxvKSxlLmNhbGwobCx7dHlwZToic2V0In0pfWNhdGNoKGUpe2EobCxlLCJzZXQiKX1lbHNlIGlmKCJnZXQiPT09aS50eXBlKWwucG9zdE1lc3NhZ2Uoe3R5cGU6ImdldCIsbmFtZTpvfSk7ZWxzZSBpZigiZmV0Y2giPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBuKGksbCxzKX1jYXRjaChlKXthKGwsZSwiZmV0Y2giKX1lbHNlIGlmKCJ3ZWJzb2NrZXQiPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBhc3luYyBmdW5jdGlvbih0LGEsbil7Y29uc3RbcyxvXT1uLmNvbm5lY3QobmV3IFVSTCh0LndlYnNvY2tldC51cmwpLHQud2Vic29ja2V0LnByb3RvY29scyx0LndlYnNvY2tldC5yZXF1ZXN0SGVhZGVycywoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJvcGVuIixhcmdzOlthXX0pfSksKGE9PnthIGluc3RhbmNlb2YgQXJyYXlCdWZmZXI/ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6Im1lc3NhZ2UiLGFyZ3M6W2FdfSxbYV0pOmUuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJtZXNzYWdlIixhcmdzOlthXX0pfSksKChhLG4pPT57ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6ImNsb3NlIixhcmdzOlthLG5dfSl9KSwoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJlcnJvciIsYXJnczpbYV19KX0pKTt0LndlYnNvY2tldC5jaGFubmVsLm9ubWVzc2FnZT1lPT57ImRhdGEiPT09ZS5kYXRhLnR5cGU/cyhlLmRhdGEuZGF0YSk6ImNsb3NlIj09PWUuZGF0YS50eXBlJiZvKGUuZGF0YS5jbG9zZUNvZGUsZS5kYXRhLmNsb3NlUmVhc29uKX0sZS5jYWxsKGEse3R5cGU6IndlYnNvY2tldCJ9KX0oaSxsLHMpfWNhdGNoKGUpe2EobCxlLCJ3ZWJzb2NrZXQiKX19fW5ldyBCcm9hZGNhc3RDaGFubmVsKCJiYXJlLW11eCIpLnBvc3RNZXNzYWdlKHt0eXBlOiJyZWZyZXNoUG9ydCJ9KSxzZWxmLm9uY29ubmVjdD1lPT57bChlLnBvcnRzWzBdKX0sY29uc29sZS5kZWJ1ZygiYmFyZS1tdXg6IHJ1bm5pbmcgdjIuMS43IChidWlsZCBjNTZkMjg2KSIpfSgpOwovLyMgc291cmNlTWFwcGluZ1VSTD13b3JrZXIuanMubWFw`;
+    const bareworker = "data:application/javascript;base64,IWZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGU9TWVzc2FnZVBvcnQucHJvdG90eXBlLnBvc3RNZXNzYWdlO2xldCB0PW51bGw7ZnVuY3Rpb24gYShlLHQsYSl7Y29uc29sZS5lcnJvcihgZXJyb3Igd2hpbGUgcHJvY2Vzc2luZyAnJHthfSc6IGAsdCksZS5wb3N0TWVzc2FnZSh7dHlwZToiZXJyb3IiLGVycm9yOnR9KX1hc3luYyBmdW5jdGlvbiBuKGEsbixzKXtjb25zdCBvPWF3YWl0IHMucmVxdWVzdChuZXcgVVJMKGEuZmV0Y2gucmVtb3RlKSxhLmZldGNoLm1ldGhvZCxhLmZldGNoLmJvZHksYS5mZXRjaC5oZWFkZXJzLG51bGwpO2lmKCFmdW5jdGlvbigpe2lmKG51bGw9PT10KXtjb25zdCBhPW5ldyBNZXNzYWdlQ2hhbm5lbCxuPW5ldyBSZWFkYWJsZVN0cmVhbTtsZXQgczt0cnl7ZS5jYWxsKGEucG9ydDEsbixbbl0pLHM9ITB9Y2F0Y2goZSl7cz0hMX1yZXR1cm4gdD1zLHN9cmV0dXJuIHR9KCkmJm8uYm9keSBpbnN0YW5jZW9mIFJlYWRhYmxlU3RyZWFtKXtjb25zdCBlPW5ldyBSZXNwb25zZShvLmJvZHkpO28uYm9keT1hd2FpdCBlLmFycmF5QnVmZmVyKCl9by5ib2R5IGluc3RhbmNlb2YgUmVhZGFibGVTdHJlYW18fG8uYm9keSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyP2UuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30sW28uYm9keV0pOmUuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30pfWxldCBzPW51bGwsbz0iIjtmdW5jdGlvbiBjKCl7cmV0dXJuIG5ldyBFcnJvcigidGhlcmUgYXJlIG5vIGJhcmUgY2xpZW50cyIse2NhdXNlOiJObyBCYXJlVHJhbnNwb3J0IHdhcyBzZXQuIFRyeSBjcmVhdGluZyBhIEJhcmVNdXhDb25uZWN0aW9uIGFuZCBjYWxsaW5nIHNldFRyYW5zcG9ydCgpIG9yIHNldE1hbnVhbFRyYW5zcG9ydCgpIG9uIGl0IGJlZm9yZSB1c2luZyBCYXJlQ2xpZW50LiJ9KX1mdW5jdGlvbiByKHQsYSl7Y29uc3Qgbj1zO2xldCBvPVthXTt0LmZldGNoPy5ib2R5JiZvLnB1c2godC5mZXRjaC5ib2R5KSx0LndlYnNvY2tldD8uY2hhbm5lbCYmby5wdXNoKHQud2Vic29ja2V0LmNoYW5uZWwpLGUuY2FsbChuLHttZXNzYWdlOnQscG9ydDphfSxvKX1mdW5jdGlvbiBsKHQpe3Qub25tZXNzYWdlPWFzeW5jIHQ9Pntjb25zdCBsPXQuZGF0YS5wb3J0LGk9dC5kYXRhLm1lc3NhZ2U7aWYoInBpbmciPT09aS50eXBlKWUuY2FsbChsLHt0eXBlOiJwb25nIn0pO2Vsc2UgaWYoInNldCI9PT1pLnR5cGUpdHJ5e2NvbnN0IHQ9YXN5bmMgZnVuY3Rpb24oKXt9LmNvbnN0cnVjdG9yO2lmKCJiYXJlLW11eC1yZW1vdGUiPT09aS5jbGllbnQuZnVuY3Rpb24pcz1pLmNsaWVudC5hcmdzWzBdLG89YGJhcmUtbXV4LXJlbW90ZSAoJHtpLmNsaWVudC5hcmdzWzFdfSlgO2Vsc2V7Y29uc3QgZT1uZXcgdChpLmNsaWVudC5mdW5jdGlvbiksW2Esbl09YXdhaXQgZSgpO3M9bmV3IGEoLi4uaS5jbGllbnQuYXJncyksbz1ufWNvbnNvbGUubG9nKCJzZXQgdHJhbnNwb3J0IHRvICIscyxvKSxlLmNhbGwobCx7dHlwZToic2V0In0pfWNhdGNoKGUpe2EobCxlLCJzZXQiKX1lbHNlIGlmKCJnZXQiPT09aS50eXBlKWwucG9zdE1lc3NhZ2Uoe3R5cGU6ImdldCIsbmFtZTpvfSk7ZWxzZSBpZigiZmV0Y2giPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBuKGksbCxzKX1jYXRjaChlKXthKGwsZSwiZmV0Y2giKX1lbHNlIGlmKCJ3ZWJzb2NrZXQiPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBhc3luYyBmdW5jdGlvbih0LGEsbil7Y29uc3RbcyxvXT1uLmNvbm5lY3QobmV3IFVSTCh0LndlYnNvY2tldC51cmwpLHQud2Vic29ja2V0LnByb3RvY29scyx0LndlYnNvY2tldC5yZXF1ZXN0SGVhZGVycywoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJvcGVuIixhcmdzOlthXX0pfSksKGE9PnthIGluc3RhbmNlb2YgQXJyYXlCdWZmZXI/ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6Im1lc3NhZ2UiLGFyZ3M6W2FdfSxbYV0pOmUuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJtZXNzYWdlIixhcmdzOlthXX0pfSksKChhLG4pPT57ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6ImNsb3NlIixhcmdzOlthLG5dfSl9KSwoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJlcnJvciIsYXJnczpbYV19KX0pKTt0LndlYnNvY2tldC5jaGFubmVsLm9ubWVzc2FnZT1lPT57ImRhdGEiPT09ZS5kYXRhLnR5cGU/cyhlLmRhdGEuZGF0YSk6ImNsb3NlIj09PWUuZGF0YS50eXBlJiZvKGUuZGF0YS5jbG9zZUNvZGUsZS5kYXRhLmNsb3NlUmVhc29uKX0sZS5jYWxsKGEse3R5cGU6IndlYnNvY2tldCJ9KX0oaSxsLHMpfWNhdGNoKGUpe2EobCxlLCJ3ZWJzb2NrZXQiKX19fW5ldyBCcm9hZGNhc3RDaGFubmVsKCJiYXJlLW11eCIpLnBvc3RNZXNzYWdlKHt0eXBlOiJyZWZyZXNoUG9ydCJ9KSxzZWxmLm9uY29ubmVjdD1lPT57bChlLnBvcnRzWzBdKX0sY29uc29sZS5kZWJ1ZygiYmFyZS1tdXg6IHJ1bm5pbmcgdjIuMS43IChidWlsZCBjNTZkMjg2KSIpfSgpOwo=";
     const connection = new BareMux.BareMuxConnection(bareworker);
 
-    // Tab management
     let tabIdCounter = 0;
     let tabs = [];
     let activeTabId = null;
@@ -511,43 +486,207 @@
     function search(input) {
       try {
         return new URL(input).toString();
-      } catch (err) {}
-
+      } catch {}
       try {
         let url = new URL(`http://${input}`);
         if (url.hostname.includes(".")) return url.toString();
-      } catch (err) {}
-
+      } catch {}
       const engine = localStorage.getItem('selectedSearchEngine') || 'brave';
-      let template;
-      if (engine === 'custom') {
-        template = document.getElementById('customSearch').value.trim() || localStorage.getItem('customSearchTemplate') || searchTemplates.brave;
-      } else {
-        template = searchTemplates[engine] || searchTemplates.brave;
-      }
+      let template = engine === 'custom' 
+        ? (document.getElementById('customSearch').value.trim() || searchTemplates.brave)
+        : searchTemplates[engine] || searchTemplates.brave;
       return template.replace("%s", encodeURIComponent(input));
     }
 
+    function getWispUrl() {
+      return document.getElementById("websocket").value.trim() || "wss://gointospace.app/wisp/";
+    }
+
+    async function setTransport(transportsel) {
+      const wispUrl = getWispUrl();
+      localStorage.setItem('selectedTransport', transportsel);
+      if (transportsel === "epoxy") {
+        await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
+      } else {
+        await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/libcurl-transport/dist/index.mjs", [{ websocket: wispUrl }]);
+      }
+    }
+
+    const currentWisp = localStorage.getItem('selectedWisp') || "wss://gointospace.app/wisp/";
+    const currentTransport = localStorage.getItem('selectedTransport') || "epoxy";
+    const currentSearchEngine = localStorage.getItem('selectedSearchEngine') || "brave";
+    
+    document.getElementById("websocket").value = currentWisp;
+    document.querySelector(`input[value="${currentTransport}"]`).checked = true;
+    document.getElementById('searchEnginePicker').value = currentSearchEngine;
+    
+    setTransport(currentTransport);
+
     function createTab(url = null, switchTo = true) {
       const tabId = ++tabIdCounter;
-      const tab = {
-        id: tabId,
-        title: url ? 'Loading...' : 'New Tab',
-        url: url,
-        favicon: 'https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico'
-      };
-
+      const tab = { id: tabId, title: url ? 'Loading...' : 'New Tab', url: url };
       tabs.push(tab);
 
-      // Create tab element
       const tabEl = document.createElement('div');
       tabEl.className = 'tab';
       tabEl.dataset.tabId = tabId;
       tabEl.innerHTML = `
-        <img class="tab-favicon" src="${tab.favicon}" alt="">
+        <img class="tab-favicon" src="https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico">
         <span class="tab-title">${tab.title}</span>
         <span class="tab-close">×</span>
       `;
 
-      tabEl.querySelector('.tab-title').addEventListener('click', () => switchTab(tabId));
-      tabEl.querySelector('.tab-
+      tabEl.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('tab-close')) switchTab(tabId);
+      });
+      
+      tabEl.querySelector('.tab-close').addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeTab(tabId);
+      });
+
+      document.getElementById('newTabBtn').insertAdjacentElement('afterend', tabEl);
+
+      const contentEl = document.createElement('div');
+      contentEl.className = 'tab-content';
+      contentEl.dataset.tabId = tabId;
+      
+      if (url) {
+        const iframe = document.createElement('iframe');
+        iframe.src = scramjet.encodeUrl(url);
+        contentEl.appendChild(iframe);
+      } else {
+        contentEl.innerHTML = `
+          <div class="new-tab-page">
+            <h1>TinyJet</h1>
+            <div class="new-tab-search">
+              <input type="text" placeholder="Search or enter URL" class="new-tab-input">
+            </div>
+          </div>
+        `;
+        contentEl.querySelector('.new-tab-input').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            navigateTo(e.target.value, tabId);
+          }
+        });
+      }
+
+      document.getElementById('tabsContent').appendChild(contentEl);
+      if (switchTo) switchTab(tabId);
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      const tabEl = document.querySelector(`.tab[data-tab-id="${tabId}"]`);
+      const contentEl = document.querySelector(`.tab-content[data-tab-id="${tabId}"]`);
+      
+      if (tabEl) tabEl.classList.add('active');
+      if (contentEl) contentEl.classList.add('active');
+      
+      activeTabId = tabId;
+      const tab = tabs.find(t => t.id === tabId);
+      if (tab && tab.url) {
+        document.getElementById('urlInput').value = tab.url;
+      } else {
+        document.getElementById('urlInput').value = '';
+      }
+    }
+
+    function closeTab(tabId) {
+      const tabIndex = tabs.findIndex(t => t.id === tabId);
+      if (tabIndex === -1) return;
+      
+      tabs.splice(tabIndex, 1);
+      document.querySelector(`.tab[data-tab-id="${tabId}"]`)?.remove();
+      document.querySelector(`.tab-content[data-tab-id="${tabId}"]`)?.remove();
+      
+      if (activeTabId === tabId) {
+        if (tabs.length > 0) {
+          const nextTab = tabs[Math.max(0, tabIndex - 1)];
+          switchTab(nextTab.id);
+        } else {
+          createTab();
+        }
+      }
+    }
+
+    function navigateTo(input, tabId = activeTabId) {
+      const url = search(input);
+      const tab = tabs.find(t => t.id === tabId);
+      if (!tab) return;
+      
+      tab.url = url;
+      tab.title = 'Loading...';
+      
+      const tabEl = document.querySelector(`.tab[data-tab-id="${tabId}"]`);
+      const contentEl = document.querySelector(`.tab-content[data-tab-id="${tabId}"]`);
+      
+      if (tabEl) {
+        tabEl.querySelector('.tab-title').textContent = 'Loading...';
+      }
+      
+      if (contentEl) {
+        contentEl.innerHTML = '';
+        const iframe = document.createElement('iframe');
+        iframe.src = scramjet.encodeUrl(url);
+        contentEl.appendChild(iframe);
+      }
+      
+      document.getElementById('urlInput').value = url;
+    }
+
+    document.getElementById('newTabBtn').addEventListener('click', () => createTab());
+    
+    document.getElementById('urlInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        navigateTo(e.target.value);
+      }
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      if (!activeTabId) return;
+      const contentEl = document.querySelector(`.tab-content[data-tab-id="${activeTabId}"]`);
+      const iframe = contentEl?.querySelector('iframe');
+      if (iframe) iframe.src = iframe.src;
+    });
+
+    document.getElementById('gear').addEventListener('click', () => {
+      document.getElementById('overlay').classList.toggle('active');
+    });
+
+    document.getElementById('overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'overlay') {
+        document.getElementById('overlay').classList.remove('active');
+      }
+    });
+
+    document.getElementById('wispInput').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newWisp = document.getElementById('websocket').value.trim();
+      localStorage.setItem('selectedWisp', newWisp);
+      const currentTransport = document.querySelector('input[name="transport"]:checked').value;
+      await setTransport(currentTransport);
+    });
+
+    document.querySelectorAll('input[name="transport"]').forEach(radio => {
+      radio.addEventListener('change', async (e) => {
+        await setTransport(e.target.value);
+      });
+    });
+
+    document.getElementById('searchEnginePicker').addEventListener('change', (e) => {
+      const engine = e.target.value;
+      localStorage.setItem('selectedSearchEngine', engine);
+      document.getElementById('customSearch').style.display = engine === 'custom' ? 'block' : 'none';
+    });
+
+    document.getElementById('customSearch').addEventListener('blur', (e) => {
+      localStorage.setItem('customSearchTemplate', e.target.value.trim());
+    });
+
+    createTab();
+  </script>
+</body>
+</html>
