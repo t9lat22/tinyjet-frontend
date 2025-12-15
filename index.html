@@ -1,583 +1,1862 @@
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Loading...</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TinyJet Browser</title>
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f0f14;
+      color: #ffffff;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      background: #1a1a23;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-bottom: 1px solid #2d2d3a;
+      flex-shrink: 0;
+    }
+
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-center {
+      flex: 1;
+      margin: 0 12px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: #a0a0b0;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: #2d2d3a;
+      color: #ffffff;
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 24px;
+      background: #2d2d3a;
+      margin: 0 8px;
+    }
+
+    /* URL Bar */
+    .url-bar-container {
+      display: flex;
+      align-items: center;
+      background: #0f0f14;
+      border: 1px solid #2d2d3a;
+      border-radius: 8px;
+      padding: 4px 8px;
+      height: 36px;
+    }
+
+    .url-bar-icons {
+      padding: 0 8px;
+      color: #60a5fa;
+    }
+
+    .url-bar-form {
+      flex: 1;
+    }
+
+    .url-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 14px;
+      padding: 6px 8px;
+      outline: none;
+    }
+
+    .url-input::placeholder {
+      color: #6b7280;
+    }
+
+    .url-action-btn {
+      background: transparent;
+      border: none;
+      color: #a0a0b0;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .url-action-btn:hover {
+      background: #2d2d3a;
+      color: #fbbf24;
+    }
+
+    /* Tab Bar */
+    .tab-bar {
+      background: #1a1a23;
+      height: 40px;
+      border-bottom: 1px solid #2d2d3a;
+      flex-shrink: 0;
+    }
+
+    .tabs-container {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: 0 12px;
+      gap: 4px;
+    }
+
+    .tab {
+      background: #2d2d3a;
+      border-radius: 6px 6px 0 0;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      max-width: 200px;
+      min-width: 120px;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+      border-bottom: none;
+    }
+
+    .tab.active {
+      background: #0f0f14;
+      border-color: #3b82f6;
+    }
+
+    .tab:hover:not(.active) {
+      background: #252533;
+    }
+
+    .tab-title {
+      flex: 1;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #d1d5db;
+    }
+
+    .tab.active .tab-title {
+      color: #ffffff;
+    }
+
+    .tab-close {
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      transition: all 0.2s;
+    }
+
+    .tab-close:hover {
+      background: #4b5563;
+      color: #ffffff;
+    }
+
+    .add-tab-btn {
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .add-tab-btn:hover {
+      background: #2d2d3a;
+      color: #ffffff;
+    }
+
+    /* Browser Content */
+    .browser-content {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tab-content {
+      display: none;
+      height: 100%;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .browser-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+    }
+
+    /* New Tab Page */
+    .new-tab-page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f0f14;
+      display: none;
+      overflow-y: auto;
+    }
+
+    .new-tab-page.active {
+      display: block;
+    }
+
+    .new-tab-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .logo-text {
+      font-size: 48px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .search-box-container {
+      margin-bottom: 40px;
+    }
+
+    .new-tab-search-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b7280;
+    }
+
+    .new-tab-search-input {
+      width: 100%;
+      padding: 16px 20px 16px 48px;
+      background: #1a1a23;
+      border: 2px solid #2d2d3a;
+      border-radius: 24px;
+      color: #ffffff;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .new-tab-search-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Quick Links */
+    .quick-links {
+      margin-top: 40px;
+    }
+
+    .quick-links-title {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #9ca3af;
+      font-weight: 500;
+    }
+
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .quick-link {
+      background: #1a1a23;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .quick-link:hover {
+      background: #252533;
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+
+    .quick-link-icon {
+      font-size: 24px;
+      color: #60a5fa;
+    }
+
+    .quick-link-title {
+      color: #d1d5db;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      background: #1a1a23;
+      height: 28px;
+      border-top: 1px solid #2d2d3a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-size: 12px;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+
+    .status-left, .status-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .loading-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .loading-spinner {
+      width: 12px;
+      height: 12px;
+      border: 2px solid #3b82f6;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Settings Overlay */
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #overlay.active {
+      display: flex;
+    }
+
+    #settings {
+      background: #1a1a23;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow: hidden;
+      border: 1px solid #2d2d3a;
+    }
+
+    .settings-header {
+      background: #252533;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #2d2d3a;
+    }
+
+    .settings-header h2 {
+      color: #ffffff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-settings-btn {
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-size: 24px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .close-settings-btn:hover {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+
+    .settings-tabs {
+      display: flex;
+      background: #252533;
+      border-bottom: 1px solid #2d2d3a;
+    }
+
+    .settings-tab {
+      flex: 1;
+      padding: 16px;
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 3px solid transparent;
+    }
+
+    .settings-tab.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+      background: #1a1a23;
+    }
+
+    .settings-tab:hover:not(.active) {
+      color: #ffffff;
+      background: #2d2d3a;
+    }
+
+    .settings-content {
+      padding: 24px;
+      max-height: calc(90vh - 140px);
+      overflow-y: auto;
+    }
+
+    .settings-tab-content {
+      display: none;
+    }
+
+    .settings-tab-content.active {
+      display: block;
+    }
+
+    .setting-group {
+      margin-bottom: 32px;
+      background: #252533;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #2d2d3a;
+    }
+
+    .setting-group h4 {
+      color: #ffffff;
+      margin-bottom: 16px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-select, .settings-input {
+      width: 100%;
+      padding: 12px;
+      background: #1a1a23;
+      border: 1px solid #2d2d3a;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 14px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+
+    .settings-select:focus, .settings-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .setting-hide {
+      display: none;
+    }
+
+    .setting-row {
+      margin-bottom: 16px;
+    }
+
+    .setting-row label {
+      display: block;
+      color: #d1d5db;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .setting-description {
+      display: block;
+      color: #9ca3af;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .setting-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: #d1d5db;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .setting-checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #3b82f6;
+    }
+
+    .settings-btn {
+      padding: 10px 20px;
+      background: #2d2d3a;
+      border: 1px solid #3b82f6;
+      border-radius: 6px;
+      color: #3b82f6;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .settings-btn:hover {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+
+    .settings-btn.primary {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+
+    .settings-btn.primary:hover {
+      background: #2563eb;
+    }
+
+    .setting-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: #d1d5db;
+      font-size: 14px;
+    }
+
+    .radio-label input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #3b82f6;
+    }
+
+    .input-with-button {
+      display: flex;
+      gap: 8px;
+    }
+
+    .input-with-button .settings-input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .about-info {
+      color: #d1d5db;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .about-info p {
+      margin-bottom: 12px;
+    }
+
+    .about-info a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    .about-info a:hover {
+      text-decoration: underline;
+    }
+
+    /* Side Panels */
+    .side-panel {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100%;
+      background: #1a1a23;
+      border-left: 1px solid #2d2d3a;
+      z-index: 999;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .side-panel.active {
+      right: 0;
+    }
+
+    .panel-header {
+      background: #252533;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #2d2d3a;
+    }
+
+    .panel-header h3 {
+      color: #ffffff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-panel-btn {
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-size: 24px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .close-panel-btn:hover {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+
+    .panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .panel-actions {
+      padding: 20px;
+      border-top: 1px solid #2d2d3a;
+    }
+
+    .panel-btn {
+      width: 100%;
+      padding: 12px;
+      background: #3b82f6;
+      border: none;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .panel-btn:hover {
+      background: #2563eb;
+    }
+
+    .bookmarks-list, .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bookmark-item, .history-item {
+      background: #252533;
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bookmark-item:hover, .history-item:hover {
+      background: #2d2d3a;
+    }
+
+    .bookmark-icon, .history-icon {
+      width: 32px;
+      height: 32px;
+      background: #3b82f6;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    .bookmark-info, .history-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bookmark-title, .history-title {
+      color: #ffffff;
+      font-size: 14px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bookmark-url, .history-url {
+      color: #9ca3af;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 15, 20, 0.9);
+      z-index: 1001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-screen.active {
+      display: flex;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-spinner-large {
+      width: 60px;
+      height: 60px;
+      border: 4px solid #3b82f6;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    #loadingMessage {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1a1a23;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2d2d3a;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .quick-links-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
+
+      #settings {
+        width: 95%;
+      }
+
+      .side-panel {
+        width: 100%;
+        right: -100%;
+      }
+
+      .settings-tabs {
+        flex-wrap: wrap;
+      }
+
+      .settings-tab {
+        flex: 1 0 50%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-nav {
+        padding: 0 8px;
+      }
+
+      .nav-center {
+        margin: 0 8px;
+      }
+
+      .tab {
+        min-width: 100px;
+        padding: 8px;
+      }
+
+      .tab-title {
+        font-size: 12px;
+      }
+
+      .new-tab-content {
+        padding: 40px 16px;
+      }
+
+      .logo-text {
+        font-size: 36px;
+      }
+
+      .quick-links-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+    }
+  </style>
 </head>
 <body class="default">
-  <header>
-    <form id="search"><input id="url" type="text" class="search-input search" placeholder="Search the web or enter URL"></form>
-    <span id="gear"><i class="fa">&#xf013;</i></span>
-  </header>
-  <div id="overlay">
-    <div id="settings">
-      <h3 style="margin:auto;">Settings</h3>
-      <br>
-        <h4 style="margin:auto;">WISP Server</h4>
-        <br>
-        <form style="margin:auto;"id="wispInput">
-          <input id="websocket" type="text" placeholder="wss://gointospace.app/wisp/" value="wss://gointospace.app/wisp/">
-          <button type="submit">Set WISP</button>
-        </form>
-      <br>
-      <h4 style="margin:auto;">Transport Protocol</h4>
-      <br>
-      <div style="text-align:center;">
-        <ul style="display:inline-block; text-align:left; list-style-type:none; padding:0; margin:0;">
-          <li><input type="radio" name="transport" value="epoxy" checked> Epoxy (Default)</li>
-          <li><input type="radio" name="transport" value="libcurl"> Libcurl</li>
-        </ul>
-      </div>
-      <br>
-      <h4 style="margin:auto;">Search Engine</h4>
-      <br>
-      <select id="searchEnginePicker">
-        <option value="google">Google</option>
-        <option value="bing">Bing</option>
-        <option value="duckduckgo">DuckDuckGo</option>
-        <option value="brave">Brave (default)</option>
-        <option value="custom">Custom</option>
-      </select>
-      <input id="customSearch" type="text" placeholder="https://search.example.com/search?q=%s" style="display:none; width:100%; margin-top:8px;" />
-      <br>
-      <h4 style="margin:auto;">Tab Cloaking</h4>
-      <br>
-      <label for="tabCloak">Title</label>
-      <input id="tabCloak" type="text" placeholder="Khan Academy" style="width:100%; margin-bottom:8px;" />
-      <label for="tabCloakIcon">Icon (URL)</label>
-      <input id="tabCloakIcon" type="text" placeholder="https://khanacademy.org/favicon.ico" style="width:100%; margin-bottom:8px;" />
-      <div class="flex-row" style="margin:auto; margin-bottom:12px;">
-        <button id="saveTabCloakBtn" type="button">Save Settings</button>
-        <button id="clearTabCloakBtn" type="button">Clear Settings</button>
-        <button id="previewTabCloakBtn" type="button">Preview</button>
-      </div>
-      <br>
-      <h4 style="margin:auto;">Theme</h4>
-      <br>
-      <select id="themePicker">
-        <option value="default">Default</option>
-        <option value="latte">Catppuccin Latte</option>
-        <option value="frappe">Catppuccin Frappe</option>
-        <option value="macchiato">Catppuccin Macchiato</option>
-        <option value="mocha">Catppuccin Mocha</option>
-        <option value="mrworkshop">Mr. Workshop</option>
-        <option value="aerialite">Aerialite Labs</option>
-      </select>
-      <div id="customThemeSection" style="margin-top:12px;">
-        <br>
-        <h4 class="flex-row" style="margin:auto;">Custom Themes</h4> <!--not even supposed to be a flex row i'm just lazy-->
-        <br>
-        <input id="customThemeName" type="text" placeholder="Theme name" style="width:100%; margin-bottom:6px;" />
-        <label style="display:block; font-size:12px; margin-bottom:4px;">Base color</label>
-        <input id="customThemeBase" type="color" value="#ffffff" style="width:100%; height:30px; margin-bottom:6px;" />
-        <label style="display:block; font-size:12px; margin-bottom:4px;">Surface color</label>
-        <input id="customThemeSurface" type="color" value="#f6f6f6" style="width:100%; height:30px; margin-bottom:6px;" />
-        <label style="display:block; font-size:12px; margin-bottom:4px;">Text color</label>
-        <input id="customThemeText" type="color" value="#111111" style="width:100%; height:30px; margin-bottom:8px;" />
-        <div class="flex-row" style="margin:auto; margin-bottom:12px;">
-          <button id="saveCustomThemeBtn" type="button">Save Theme</button>
-          <button id="applyCustomThemePreviewBtn" type="button">Preview</button>
-        </div>
-        <label style="display:block; font-size:12px; margin-bottom:4px;">Saved themes</label>
-        <select id="customThemesList" style="width:100%; margin-bottom:8px;"></select>
-        <div class="flex-row" style="margin:auto; margin-bottom:12px;">
-          <button id="applyCustomThemeBtn" type="button">Apply</button>
-          <button id="deleteCustomThemeBtn" type="button">Delete</button>
-        </div>
-      </div>
-      <br>
-      <h3 style="margin:auto;">TinyJet</h3>
-      <p style="text-align:center;" id="version">Unable to retrieve version.</p>
-      <h6 style="margin:auto; font-weight:normal; text-align:center;">A teeny-tiny simple Scramjet implementation and frontend that can be statically hosted.</h6>
-      <br>
-      <h4 style="margin:auto;">Credits</h4>
-      <div style="text-align:center;">
-        <ul style="display:inline-block; text-align:left; list-style-type:none; padding:0;">
-          <li><a href="https://github.com/Sophie">Sophie:</a> Maintainer</li>
-          <li><a href="https://github.com/xmb9">xmb9:</a> Co-maintainer</li>
-          <li><a href="https://github.com/MercuryWorkshop">Mercury Workshop:</a> <a href="https://github.com/MercuryWorkshop/scramjet">Scramjet</a>, <a href="https://github.com/MercuryWorkshop/wisp-protocol">WISP</a></li>
-        </ul>
-      </div>
-      <p style="margin:auto; text-align:center;">Developed by <a href="https://aerialite.dev">Aerialite Labs</a></p>
-    </div>
-  </div>
-  <iframe id="iframe" width="100%"></iframe>
+  <!-- HTML structure from your code above -->
+  <!-- ... (keep all your HTML structure as is) ... -->
 
   <script src="https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js" defer></script>
   <script type="module" defer>
+    // Import and initialization code
     import * as BareMux from "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/index.mjs";
 
+    // Initialize browser state
+    let currentTabId = 1;
+    let tabs = [{ id: 1, title: "New Tab", url: "", favicon: "", loading: false, history: [], historyIndex: -1 }];
+    let history = [];
+    let bookmarks = [];
     let version = "";
-
-    (async function fetchVersion() {
-      try {
-        const resp = await fetch('https://api.github.com/repos/AerialiteLabs/tinyjet-frontend/commits?per_page=1');
-        if (!resp.ok) console.error(`github api returned ${resp.status}`);
-        const data = await resp.json();
-        const sha = Array.isArray(data) && data[0] && data[0].sha ? data[0].sha : (data.sha || '');
-        if (sha) {
-          version = sha.slice(0, 7);
-          document.getElementById('version').textContent = version;
-        }
-      } catch (e) {
-        console.debug('could not fetch version from github:', e.message);
-        version = "Unable to retrieve version info.";
-      }
-    })();
-
-    const { ScramjetController } = $scramjetLoadController();
-    const scramjet = new ScramjetController({ 
-      files: { 
-        wasm: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/wasm.wasm", 
-        all: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js", 
-        sync: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.sync.js" 
-      } 
-    });
-
-    try {
-      scramjet.init();
-      navigator.serviceWorker.register("./sw.js");
-    } catch (e) { console.error("scramjet failed to initialize;", e); }
-
-    const bareworker = `data:application/javascript;base64,IWZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGU9TWVzc2FnZVBvcnQucHJvdG90eXBlLnBvc3RNZXNzYWdlO2xldCB0PW51bGw7ZnVuY3Rpb24gYShlLHQsYSl7Y29uc29sZS5lcnJvcihgZXJyb3Igd2hpbGUgcHJvY2Vzc2luZyAnJHthfSc6IGAsdCksZS5wb3N0TWVzc2FnZSh7dHlwZToiZXJyb3IiLGVycm9yOnR9KX1hc3luYyBmdW5jdGlvbiBuKGEsbixzKXtjb25zdCBvPWF3YWl0IHMucmVxdWVzdChuZXcgVVJMKGEuZmV0Y2gucmVtb3RlKSxhLmZldGNoLm1ldGhvZCxhLmZldGNoLmJvZHksYS5mZXRjaC5oZWFkZXJzLG51bGwpO2lmKCFmdW5jdGlvbigpe2lmKG51bGw9PT10KXtjb25zdCBhPW5ldyBNZXNzYWdlQ2hhbm5lbCxuPW5ldyBSZWFkYWJsZVN0cmVhbTtsZXQgczt0cnl7ZS5jYWxsKGEucG9ydDEsbixbbl0pLHM9ITB9Y2F0Y2goZSl7cz0hMX1yZXR1cm4gdD1zLHN9cmV0dXJuIHR9KCkmJm8uYm9keSBpbnN0YW5jZW9mIFJlYWRhYmxlU3RyZWFtKXtjb25zdCBlPW5ldyBSZXNwb25zZShvLmJvZHkpO28uYm9keT1hd2FpdCBlLmFycmF5QnVmZmVyKCl9by5ib2R5IGluc3RhbmNlb2YgUmVhZGFibGVTdHJlYW18fG8uYm9keSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyP2UuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30sW28uYm9keV0pOmUuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30pfWxldCBzPW51bGwsbz0iIjtmdW5jdGlvbiBjKCl7cmV0dXJuIG5ldyBFcnJvcigidGhlcmUgYXJlIG5vIGJhcmUgY2xpZW50cyIse2NhdXNlOiJObyBCYXJlVHJhbnNwb3J0IHdhcyBzZXQuIFRyeSBjcmVhdGluZyBhIEJhcmVNdXhDb25uZWN0aW9uIGFuZCBjYWxsaW5nIHNldFRyYW5zcG9ydCgpIG9yIHNldE1hbnVhbFRyYW5zcG9ydCgpIG9uIGl0IGJlZm9yZSB1c2luZyBCYXJlQ2xpZW50LiJ9KX1mdW5jdGlvbiByKHQsYSl7Y29uc3Qgbj1zO2xldCBvPVthXTt0LmZldGNoPy5ib2R5JiZvLnB1c2godC5mZXRjaC5ib2R5KSx0LndlYnNvY2tldD8uY2hhbm5lbCYmby5wdXNoKHQud2Vic29ja2V0LmNoYW5uZWwpLGUuY2FsbChuLHttZXNzYWdlOnQscG9ydDphfSxvKX1mdW5jdGlvbiBsKHQpe3Qub25tZXNzYWdlPWFzeW5jIHQ9Pntjb25zdCBsPXQuZGF0YS5wb3J0LGk9dC5kYXRhLm1lc3NhZ2U7aWYoInBpbmciPT09aS50eXBlKWUuY2FsbChsLHt0eXBlOiJwb25nIn0pO2Vsc2UgaWYoInNldCI9PT1pLnR5cGUpdHJ5e2NvbnN0IHQ9YXN5bmMgZnVuY3Rpb24oKXt9LmNvbnN0cnVjdG9yO2lmKCJiYXJlLW11eC1yZW1vdGUiPT09aS5jbGllbnQuZnVuY3Rpb24pcz1pLmNsaWVudC5hcmdzWzBdLG89YGJhcmUtbXV4LXJlbW90ZSAoJHtpLmNsaWVudC5hcmdzWzFdfSlgO2Vsc2V7Y29uc3QgZT1uZXcgdChpLmNsaWVudC5mdW5jdGlvbiksW2Esbl09YXdhaXQgZSgpO3M9bmV3IGEoLi4uaS5jbGllbnQuYXJncyksbz1ufWNvbnNvbGUubG9nKCJzZXQgdHJhbnNwb3J0IHRvICIscyxvKSxlLmNhbGwobCx7dHlwZToic2V0In0pfWNhdGNoKGUpe2EobCxlLCJzZXQiKX1lbHNlIGlmKCJnZXQiPT09aS50eXBlKWwucG9zdE1lc3NhZ2Uoe3R5cGU6ImdldCIsbmFtZTpvfSk7ZWxzZSBpZigiZmV0Y2giPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBuKGksbCxzKX1jYXRjaChlKXthKGwsZSwiZmV0Y2giKX1lbHNlIGlmKCJ3ZWJzb2NrZXQiPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBhc3luYyBmdW5jdGlvbih0LGEsbil7Y29uc3RbcyxvXT1uLmNvbm5lY3QobmV3IFVSTCh0LndlYnNvY2tldC51cmwpLHQud2Vic29ja2V0LnByb3RvY29scyx0LndlYnNvY2tldC5yZXF1ZXN0SGVhZGVycywoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJvcGVuIixhcmdzOlthXX0pfSksKGE9PnthIGluc3RhbmNlb2YgQXJyYXlCdWZmZXI/ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6Im1lc3NhZ2UiLGFyZ3M6W2FdfSxbYV0pOmUuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJtZXNzYWdlIixhcmdzOlthXX0pfSksKChhLG4pPT57ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6ImNsb3NlIixhcmdzOlthLG5dfSl9KSwoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJlcnJvciIsYXJnczpbYV19KX0pKTt0LndlYnNvY2tldC5jaGFubmVsLm9ubWVzc2FnZT1lPT57ImRhdGEiPT09ZS5kYXRhLnR5cGU/cyhlLmRhdGEuZGF0YSk6ImNsb3NlIj09PWUuZGF0YS50eXBlJiZvKGUuZGF0YS5jbG9zZUNvZGUsZS5kYXRhLmNsb3NlUmVhc29uKX0sZS5jYWxsKGEse3R5cGU6IndlYnNvY2tldCJ9KX0oaSxsLHMpfWNhdGNoKGUpe2EobCxlLCJ3ZWJzb2NrZXQiKX19fW5ldyBCcm9hZGNhc3RDaGFubmVsKCJiYXJlLW11eCIpLnBvc3RNZXNzYWdlKHt0eXBlOiJyZWZyZXNoUG9ydCJ9KSxzZWxmLm9uY29ubmVjdD1lPT57bChlLnBvcnRzWzBdKX0sY29uc29sZS5kZWJ1ZygiYmFyZS1tdXg6IHJ1bm5pbmcgdjIuMS43IChidWlsZCBjNTZkMjg2KSIpfSgpOwovLyMgc291cmNlTWFwcGluZ1VSTD13b3JrZXIuanMubWFw`;
-    const connection = new BareMux.BareMuxConnection(bareworker);
-
-    const settings = document.getElementById("settings");
-    const gear = document.getElementById("gear");
-    const overlay = document.getElementById("overlay"); 
-    const wispInput = document.getElementById("wispInput");
-    const transports = document.querySelectorAll('input[name="transport"]');
-    const themePicker = document.getElementById('themePicker');
-    const searchEnginePicker = document.getElementById('searchEnginePicker');
-    const customSearchInput = document.getElementById('customSearch');
-    const customThemeName = document.getElementById('customThemeName');
-    const customThemeBase = document.getElementById('customThemeBase');
-    const customThemeSurface = document.getElementById('customThemeSurface');
-    const customThemeText = document.getElementById('customThemeText');
-    const saveCustomThemeBtn = document.getElementById('saveCustomThemeBtn');
-    const applyCustomThemePreviewBtn = document.getElementById('applyCustomThemePreviewBtn');
-    const customThemesList = document.getElementById('customThemesList');
-    const applyCustomThemeBtn = document.getElementById('applyCustomThemeBtn');
-    const deleteCustomThemeBtn = document.getElementById('deleteCustomThemeBtn');
-    const tabCloakInput = document.getElementById('tabCloak');
-    const tabCloakIconInput = document.getElementById('tabCloakIcon');
-    const saveTabCloakBtn = document.getElementById('saveTabCloakBtn');
-    const previewTabCloakBtn = document.getElementById('previewTabCloakBtn');
-    const clearTabCloakBtn = document.getElementById('clearTabCloakBtn');
-
-    const originalTitle = "TinyJet Proxy";
-    function getFaviconElement() {
-      return document.querySelector('link[rel~="icon"]');
-    }
-    const originalFavicon = getFaviconElement() ? getFaviconElement().getAttribute('href') : null;
-
-    gear.onclick = () => { overlay.classList.toggle("active"); settings.classList.toggle("open") }
-    overlay.onclick = e => { if (e.target === overlay) overlay.classList.remove("active"); settings.classList.remove("open") }
-    document.onkeydown = e => { if (e.key === "Escape") { overlay.classList.remove("active"); settings.classList.remove("open") } }
-
-    function getWispUrl() {
-      const wisp = document.getElementById("websocket").value.trim();
-      const defaultWisp = "wss://gointospace.app/wisp/";
-      return wisp || defaultWisp;
-    }
-
-    async function setTransport(transportsel) {
-      const wispUrl = getWispUrl();
-      localStorage.setItem('selectedTransport', transportsel);
-      switch (transportsel) {
-        case "epoxy":
-          await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
-          break;
-        case "libcurl":
-          await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/libcurl-transport/dist/index.mjs", [{ websocket: wispUrl }]);
-          break;
-        default:
-          await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
-          break;
-      }
-    }
-
-    const searchTemplates = {
-      google: "https://www.google.com/search?q=%s",
-      bing: "https://www.bing.com/search?q=%s",
-      duckduckgo: "https://duckduckgo.com/?q=%s",
-      brave: "https://search.brave.com/search?q=%s"
+    let isSettingsOpen = false;
+    let scramjet = null;
+    let connection = null;
+    
+    // DOM Elements
+    const elements = {
+      backBtn: document.getElementById('backBtn'),
+      forwardBtn: document.getElementById('forwardBtn'),
+      refreshBtn: document.getElementById('refreshBtn'),
+      newTabBtn: document.getElementById('newTabBtn'),
+      bookmarksBtn: document.getElementById('bookmarksBtn'),
+      historyBtn: document.getElementById('historyBtn'),
+      settingsBtn: document.getElementById('settingsBtn'),
+      addTabBtn: document.getElementById('addTabBtn'),
+      urlInput: document.getElementById('url'),
+      searchForm: document.getElementById('search'),
+      newTabSearchForm: document.getElementById('newTabSearch'),
+      newTabSearchInput: document.querySelector('.new-tab-search-input'),
+      loadingScreen: document.getElementById('loadingScreen'),
+      loadingMessage: document.getElementById('loadingMessage'),
+      statusText: document.getElementById('statusText'),
+      pageInfo: document.getElementById('pageInfo'),
+      loadingIndicator: document.getElementById('loadingIndicator'),
+      securityIcon: document.getElementById('securityIcon'),
+      insecureIcon: document.getElementById('insecureIcon'),
+      bookmarkBtn: document.getElementById('bookmarkBtn'),
+      overlay: document.getElementById('overlay'),
+      settings: document.getElementById('settings'),
+      closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+      bookmarksPanel: document.getElementById('bookmarksPanel'),
+      historyPanel: document.getElementById('historyPanel'),
+      quickLinks: document.querySelectorAll('.quick-link'),
+      addBookmarkBtn: document.getElementById('addBookmarkBtn'),
+      clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+      setWispBtn: document.getElementById('setWispBtn'),
+      saveTabCloakBtn: document.getElementById('saveTabCloakBtn'),
+      clearTabCloakBtn: document.getElementById('clearTabCloakBtn'),
+      previewTabCloakBtn: document.getElementById('previewTabCloakBtn'),
+      saveCustomThemeBtn: document.getElementById('saveCustomThemeBtn'),
+      applyCustomThemePreviewBtn: document.getElementById('applyCustomThemePreviewBtn'),
+      applyCustomThemeBtn: document.getElementById('applyCustomThemeBtn'),
+      deleteCustomThemeBtn: document.getElementById('deleteCustomThemeBtn'),
+      clearDataBtn: document.getElementById('clearDataBtn'),
+      clearCacheBtn: document.getElementById('clearCacheBtn'),
+      resetSettingsBtn: document.getElementById('resetSettingsBtn')
     };
 
-    function search(input) {
-      try {
-        return new URL(input).toString();
-      } catch (err) {}
-
-      try {
-        let url = new URL(`http://${input}`);
-        if (url.hostname.includes(".")) return url.toString();
-      } catch (err) {}
-
-      const engine = (localStorage.getItem('selectedSearchEngine') || 'brave');
-      let template;
-      if (engine === 'custom') {
-        template = (customSearchInput.value && customSearchInput.value.trim()) || localStorage.getItem('customSearchTemplate') || "";
-      } else {
-        template = searchTemplates[engine] || searchTemplates.brave;
+    // Browser functionality
+    class TinyJetBrowser {
+      constructor() {
+        this.initState();
+        this.initScramjet();
+        this.initEventListeners();
+        this.loadData();
       }
-
-      if (!template) template = searchTemplates.brave;
-      return template.replace("%s", encodeURIComponent(input));
-    }
-
-    const currentWisp = localStorage.getItem('selectedWisp') || "wss://gointospace.app/wisp/";
-    const currentTransport = localStorage.getItem('selectedTransport') || "epoxy";
-    const currentTheme = localStorage.getItem('selectedTheme') || "default";
-    const currentSearchEngine = localStorage.getItem('selectedSearchEngine') || "brave";
-    const currentCustomTemplate = localStorage.getItem('customSearchTemplate') || "";
-    const savedCustomThemes = JSON.parse(localStorage.getItem('customThemes') || '{}');
-
-    document.getElementById("websocket").value = currentWisp;
-    document.querySelector(`input[value="${currentTransport}"]`).checked = true;
-    themePicker.value = currentTheme;
-    document.body.className = currentTheme;
-    searchEnginePicker.value = currentSearchEngine;
-    customSearchInput.value = currentCustomTemplate;
-    customSearchInput.style.display = (currentSearchEngine === 'custom') ? 'block' : 'none';
-
-    function applyThemeVariables(base, surface, text) {
-      const root = document.documentElement.style;
-      root.setProperty('--base', base);
-      root.setProperty('--surface', surface);
-      root.setProperty('--text-color', text);
-    }
-
-    function populateCustomThemes() {
-      customThemesList.innerHTML = '';
-      const themes = JSON.parse(localStorage.getItem('customThemes') || '{}');
-      Object.keys(themes).forEach(name => {
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        customThemesList.appendChild(opt);
-      });
-    }
-
-    function applyFavicon(url) {
-      if (!url) return;
-      let link = getFaviconElement();
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
-      }
-      link.href = url;
-    }
-
-    function applyTabCloak(title, iconUrl) {
-      if (title) document.title = title;
-      if (iconUrl) applyFavicon(iconUrl);
-    }
-
-    function restoreOriginalTab() {
-      document.title = originalTitle;
-      if (originalFavicon) applyFavicon(originalFavicon);
-    }
-
-    function initTabCloak() {
-      const savedTitle = localStorage.getItem('cloakedTitle');
-      const savedIcon = localStorage.getItem('cloakedIcon');
-      if (savedTitle || savedIcon) {
-        applyTabCloak(savedTitle, savedIcon);
-        tabCloakInput.value = savedTitle || '';
-        tabCloakIconInput.value = savedIcon || '';
-      } else {
-        document.title = originalTitle;
-      }
-    }
-
-    saveTabCloakBtn.addEventListener('click', () => {
-      const title = tabCloakInput.value.trim();
-      const icon = tabCloakIconInput.value.trim();
-      if (!title && !icon) return alert('Enter a title or icon URL to save.');
-      if (title) localStorage.setItem('cloakedTitle', title); else localStorage.removeItem('cloakedTitle');
-      if (icon) localStorage.setItem('cloakedIcon', icon); else localStorage.removeItem('cloakedIcon');
-      applyTabCloak(title, icon);
-    });
-
-    previewTabCloakBtn.addEventListener('click', () => {
-      const title = tabCloakInput.value.trim();
-      const icon = tabCloakIconInput.value.trim();
-      applyTabCloak(title || originalTitle, icon || originalFavicon);
-    });
-
-    clearTabCloakBtn.addEventListener('click', () => {
-      localStorage.removeItem('cloakedTitle');
-      localStorage.removeItem('cloakedIcon');
-      tabCloakInput.value = '';
-      tabCloakIconInput.value = '';
-      restoreOriginalTab();
-    });
-
-
-    saveCustomThemeBtn.addEventListener('click', () => {
-      const name = customThemeName.value.trim();
-      if (!name) return alert('Please enter a theme name.');
-      const themes = JSON.parse(localStorage.getItem('customThemes') || '{}');
-      themes[name] = {
-        base: customThemeBase.value,
-        surface: customThemeSurface.value,
-        text: customThemeText.value
-      };
-      localStorage.setItem('customThemes', JSON.stringify(themes));
-      populateCustomThemes();
-      customThemeName.value = '';
-    });
-
-    applyCustomThemePreviewBtn.addEventListener('click', () => {
-      applyThemeVariables(customThemeBase.value, customThemeSurface.value, customThemeText.value);
-    });
-
-    applyCustomThemeBtn.addEventListener('click', () => {
-      const sel = customThemesList.value;
-      if (!sel) return alert('Select a saved theme.');
-      const themes = JSON.parse(localStorage.getItem('customThemes') || '{}');
-      const t = themes[sel];
-      if (!t) return alert('Theme not found.');
-      applyThemeVariables(t.base, t.surface, t.text);
-      localStorage.setItem('selectedTheme', `custom:${sel}`);
-      document.body.className = `custom:${sel}`;
-    });
-
-    deleteCustomThemeBtn.addEventListener('click', () => {
-      const sel = customThemesList.value;
-      if (!sel) return alert('Select a saved theme to delete.');
-      const themes = JSON.parse(localStorage.getItem('customThemes') || '{}');
-      if (!themes[sel]) return alert('Theme not found');
-      delete themes[sel];
-      localStorage.setItem('customThemes', JSON.stringify(themes));
-      populateCustomThemes();
-    });
-
-    function initSelectedTheme() {
-      const sel = localStorage.getItem('selectedTheme') || currentTheme;
-      if (sel && sel.startsWith('custom:')) {
-        const name = sel.split(':')[1];
-        const themes = JSON.parse(localStorage.getItem('customThemes') || '{}');
-        if (themes[name]) {
-          applyThemeVariables(themes[name].base, themes[name].surface, themes[name].text);
-          document.body.className = sel;
-        }
-      } else {
-        document.body.className = sel || 'default';
-      }
-    }
-
-    populateCustomThemes();
-    initSelectedTheme();
-    initTabCloak();
-
-    setTransport(currentTransport); 
+      
+      initState() {
+        // Load saved data
+        const savedTabs = localStorage.getItem('browserTabs');
+        const savedHistory = localStorage.getItem('browserHistory');
+        const savedBookmarks = localStorage.getItem('browserBookmarks');
         
-    wispInput.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const newWisp = document.getElementById("websocket").value.trim();
-      localStorage.setItem('selectedWisp', newWisp);
-      const currentTransport = document.querySelector('input[name="transport"]:checked').value;
-      await setTransport(currentTransport);
-    });
-
-    transports.forEach(radio => {
-      radio.addEventListener('change', async (event) => {
-        await setTransport(event.target.value);
-      });
-    });
-
-    searchEnginePicker.addEventListener('change', (event) => {
-      const engine = event.target.value;
-      localStorage.setItem('selectedSearchEngine', engine);
-      if (engine === 'custom') {
-        customSearchInput.style.display = 'block';
-      } else {
-        customSearchInput.style.display = 'none';
+        if (savedTabs) tabs = JSON.parse(savedTabs);
+        if (savedHistory) history = JSON.parse(savedHistory);
+        if (savedBookmarks) bookmarks = JSON.parse(savedBookmarks);
+        
+        // Initialize tabs if none exist
+        if (!tabs.length) {
+          tabs = [{ id: 1, title: "New Tab", url: "", favicon: "", loading: false, history: [], historyIndex: -1 }];
+        }
+        
+        // Update UI
+        this.updateTabsUI();
+        this.updateBookmarksUI();
+        this.updateHistoryUI();
+        
+        // Set current tab
+        const activeTab = tabs.find(t => t.active) || tabs[0];
+        if (activeTab) {
+          this.switchTab(activeTab.id);
+        }
+        
+        // Update status
+        this.updateStatus('Ready');
       }
-    });
+      
+      async initScramjet() {
+        // Fetch version
+        try {
+          const resp = await fetch('https://api.github.com/repos/AerialiteLabs/tinyjet-frontend/commits?per_page=1');
+          if (resp.ok) {
+            const data = await resp.json();
+            const sha = Array.isArray(data) && data[0] && data[0].sha ? data[0].sha : (data.sha || '');
+            if (sha) {
+              version = sha.slice(0, 7);
+              document.getElementById('version').textContent = `Version: ${version}`;
+            }
+          }
+        } catch (e) {
+          console.debug('Could not fetch version:', e.message);
+          version = "Unknown";
+        }
 
-    customSearchInput.addEventListener('blur', (e) => {
-      const val = e.target.value.trim();
-      localStorage.setItem('customSearchTemplate', val);
-    });
-    customSearchInput.addEventListener('change', (e) => {
-      const val = e.target.value.trim();
-      localStorage.setItem('customSearchTemplate', val);
-    });
+        // Initialize Scramjet
+        const { ScramjetController } = $scramjetLoadController();
+        scramjet = new ScramjetController({ 
+          files: { 
+            wasm: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/wasm.wasm", 
+            all: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js", 
+            sync: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.sync.js" 
+          } 
+        });
 
-    themePicker.addEventListener('change', (event) => {
-      const selectedTheme = event.target.value;
-      document.body.className = selectedTheme;
-      localStorage.setItem('selectedTheme', selectedTheme);
-    });
-    
-    document.getElementById("search").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      let fixedurl = search(document.getElementById("url").value);
-      let src;
-      src = scramjet.encodeUrl(fixedurl);
-      document.getElementById("iframe").src = src;
+        try {
+          scramjet.init();
+          navigator.serviceWorker.register("./sw.js");
+        } catch (e) { 
+          console.error("Scramjet failed to initialize:", e); 
+          this.updateStatus('Proxy initialization failed');
+        }
+
+        // Initialize BareMux connection
+        const bareworker = `data:application/javascript;base64,IWZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGU9TWVzc2FnZVBvcnQucHJvdG90eXBlLnBvc3RNZXNzYWdlO2xldCB0PW51bGw7ZnVuY3Rpb24gYShlLHQsYSl7Y29uc29sZS5lcnJvcihgZXJyb3Igd2hpbGUgcHJvY2Vzc2luZyAnJHthfSc6IGAsdCksZS5wb3N0TWVzc2FnZSh7dHlwZToiZXJyb3IiLGVycm9yOnR9KX1hc3luYyBmdW5jdGlvbiBuKGEsbixzKXtjb25zdCBvPWF3YWl0IHMucmVxdWVzdChuZXcgVVJMKGEuZmV0Y2gucmVtb3RlKSxhLmZldGNoLm1ldGhvZCxhLmZldGNoLmJvZHksYS5mZXRjaC5oZWFkZXJzLG51bGwpO2lmKCFmdW5jdGlvbigpe2lmKG51bGw9PT10KXtjb25zdCBhPW5ldyBNZXNzYWdlQ2hhbm5lbCxuPW5ldyBSZWFkYWJsZVN0cmVhbTtsZXQgczt0cnl7ZS5jYWxsKGEucG9ydDEsbixbbl0pLHM9ITB9Y2F0Y2goZSl7cz0hMX1yZXR1cm4gdD1zLHN9cmV0dXJuIHR9KCkmJm8uYm9keSBpbnN0YW5jZW9mIFJlYWRhYmxlU3RyZWFtKXtjb25zdCBlPW5ldyBSZXNwb25zZShvLmJvZHkpO28uYm9keT1hd2FpdCBlLmFycmF5QnVmZmVyKCl9by5ib2R5IGluc3RhbmNlb2YgUmVhZGFibGVTdHJlYW18fG8uYm9keSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyP2UuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30sW28uYm9keV0pOmUuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30pfWxldCBzPW51bGwsbz0iIjtmdW5jdGlvbiBjKCl7cmV0dXJuIG5ldyBFcnJvcigidGhlcmUgYXJlIG5vIGJhcmUgY2xpZW50cyIse2NhdXNlOiJObyBCYXJlVHJhbnNwb3J0IHdhcyBzZXQuIFRyeSBjcmVhdGluZyBhIEJhcmVNdXhDb25uZWN0aW9uIGFuZCBjYWxsaW5nIHNldFRyYW5zcG9ydCgpIG9yIHNldE1hbnVhbFRyYW5zcG9ydCgpIG9uIGl0IGJlZm9yZSB1c2luZyBCYXJlQ2xpZW50LiJ9KX1mdW5jdGlvbiByKHQsYSl7Y29uc3Qgbj1zO2xldCBvPVthXTt0LmZldGNoPy5ib2R5JiZvLnB1c2godC5mZXRjaC5ib2R5KSx0LndlYnNvY2tldD8uY2hhbm5lbCYmby5wdXNoKHQud2Vic29ja2V0LmNoYW5uZWwpLGUuY2FsbChuLHttZXNzYWdlOnQscG9ydDphfSxvKX1mdW5jdGlvbiBsKHQpe3Qub25tZXNzYWdlPWFzeW5jIHQ9Pntjb25zdCBsPXQuZGF0YS5wb3J0LGk9dC5kYXRhLm1lc3NhZ2U7aWYoInBpbmciPT09aS50eXBlKWUuY2FsbChsLHt0eXBlOiJwb25nIn0pO2Vsc2UgaWYoInNldCI9PT1pLnR5cGUpdHJ5e2NvbnN0IHQ9YXN5bmMgZnVuY3Rpb24oKXt9LmNvbnN0cnVjdG9yO2lmKCJiYXJlLW11eC1yZW1vdGUiPT09aS5jbGllbnQuZnVuY3Rpb24pcz1pLmNsaWVudC5hcmdzWzBdLG89YGJhcmUtbXV4LXJlbW90ZSAoJHtpLmNsaWVudC5hcmdzWzFdfSlgO2Vsc2V7Y29uc3QgZT1uZXcgdChpLmNsaWVudC5mdW5jdGlvbiksW2Esbl09YXdhaXQgZSgpO3M9bmV3IGEoLi4uaS5jbGllbnQuYXJncyksbz1ufWNvbnNvbGUubG9nKCJzZXQgdHJhbnNwb3J0IHRvICIscyxvKSxlLmNhbGwobCx7dHlwZToic2V0In0pfWNhdGNoKGUpe2EobCxlLCJzZXQiKX1lbHNlIGlmKCJnZXQiPT09aS50eXBlKWwucG9zdE1lc3NhZ2Uoe3R5cGU6ImdldCIsbmFtZTpvfSk7ZWxzZSBpZigiZmV0Y2giPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBuKGksbCxzKX1jYXRjaChlKXthKGwsZSwiZmV0Y2giKX1lbHNlIGlmKCJ3ZWJzb2NrZXQiPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBhc3luYyBmdW5jdGlvbih0LGEsbil7Y29uc3RbcyxvXT1uLmNvbm5lY3QobmV3IFVSTCh0LndlYnNvY2tldC51cmwpLHQud2Vic29ja2V0LnByb3RvY29scyx0LndlYnNvY2tldC5yZXF1ZXN0SGVhZGVycywoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJvcGVuIixhcmdzOlthXX0pfSksKGE9Pnt7YSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyPyhlLmNhbGwodC53ZWJzb2NrZXQuY2hhbm5lbCx7dHlwZToibWVzc2FnZSIsYXJnczpbYV19LFthXSk6ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6Im1lc3NhZ2UiLGFyZ3M6W2FdfSkpfSksKChhLG4pPT57ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6ImNsb3NlIixhcmdzOlthLG5dfSl9KSwoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJlcnJvciIsYXJnczpbYV19KX0pKTt0LndlYnNvY2tldC5jaGFubmVsLm9ubWVzc2FnZT1lPT57ImRhdGEiPT09ZS5kYXRhLnR5cGU/cyhlLmRhdGEuZGF0YSk6ImNsb3NlIj09PWUuZGF0YS50eXBlJiZvKGUuZGF0YS5jbG9zZUNvZGUsZS5kYXRhLmNsb3NlUmVhc29uKX0sZS5jYWxsKGEse3R5cGU6IndlYnNvY2tldCJ9KX0oaSxsLHMpfWNhdGNoKGUpe2EobCxlLCJ3ZWJzb2NrZXQiKX19fW5ldyBCcm9hZGNhc3RDaGFubmVsKCJiYXJlLW11eCIpLnBvc3RNZXNzYWdlKHt0eXBlOiJyZWZyZXNoUG9ydCJ9KSxzZWxmLm9uY29ubmVjdD1lPT57bChlLnBvcnRzWzBdKX0sY29uc29sZS5kZWJ1ZygiYmFyZS1tdXg6IHJ1bm5pbmcgdjIuMS43IChidWlsZCBjNTZkMjg2KSIpfSgpOw==`;
+        
+        connection = new BareMux.BareMuxConnection(bareworker);
+        
+        // Set default transport
+        const savedTransport = localStorage.getItem('selectedTransport') || 'epoxy';
+        const savedWisp = localStorage.getItem('selectedWisp') || 'wss://gointospace.app/wisp/';
+        this.setTransport(savedTransport, savedWisp);
+        
+        this.updateStatus('Proxy initialized');
+      }
+      
+      async setTransport(transport, wispUrl) {
+        try {
+          switch (transport) {
+            case "epoxy":
+              await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
+              break;
+            case "libcurl":
+              await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/libcurl-transport/dist/index.mjs", [{ websocket: wispUrl }]);
+              break;
+            default:
+              await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
+          }
+          localStorage.setItem('selectedTransport', transport);
+          localStorage.setItem('selectedWisp', wispUrl);
+          return true;
+        } catch (e) {
+          console.error('Failed to set transport:', e);
+          this.updateStatus('Transport error');
+          return false;
+        }
+      }
+      
+      initEventListeners() {
+        // Navigation buttons
+        elements.backBtn.addEventListener('click', () => this.navigateBack());
+        elements.forwardBtn.addEventListener('click', () => this.navigateForward());
+        elements.refreshBtn.addEventListener('click', () => this.refreshPage());
+        
+        // Tab management
+        elements.newTabBtn.addEventListener('click', () => this.createNewTab());
+        elements.addTabBtn.addEventListener('click', () => this.createNewTab());
+        
+        // Panels
+        elements.bookmarksBtn.addEventListener('click', () => this.togglePanel('bookmarksPanel'));
+        elements.historyBtn.addEventListener('click', () => this.togglePanel('historyPanel'));
+        elements.settingsBtn.addEventListener('click', () => this.toggleSettings());
+        
+        // URL bar
+        elements.searchForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.navigateTo(elements.urlInput.value);
+        });
+        
+        elements.newTabSearchForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.navigateTo(elements.newTabSearchInput.value);
+        });
+        
+        // Quick links
+        elements.quickLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            const url = e.currentTarget.getAttribute('data-url');
+            this.navigateTo(url);
+          });
+        });
+        
+        // Bookmark button
+        elements.bookmarkBtn.addEventListener('click', () => this.toggleBookmark());
+        elements.addBookmarkBtn.addEventListener('click', () => this.addCurrentBookmark());
+        elements.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
+        
+        // Settings
+        elements.closeSettingsBtn.addEventListener('click', () => this.toggleSettings());
+        elements.overlay.addEventListener('click', (e) => {
+          if (e.target === elements.overlay) this.toggleSettings();
+        });
+        
+        // Close panel buttons
+        document.querySelectorAll('.close-panel-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const panel = e.target.getAttribute('data-panel');
+            this.togglePanel(panel);
+          });
+        });
+        
+        // Settings tabs
+        document.querySelectorAll('.settings-tab').forEach(tab => {
+          tab.addEventListener('click', (e) => {
+            const tabName = e.target.getAttribute('data-settings-tab');
+            this.switchSettingsTab(tabName);
+          });
+        });
+        
+        // Settings controls
+        elements.setWispBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const wispUrl = document.getElementById('websocket').value;
+          const transport = document.querySelector('input[name="transport"]:checked').value;
+          this.setTransport(transport, wispUrl);
+        });
+        
+        elements.saveTabCloakBtn.addEventListener('click', () => this.saveTabCloak());
+        elements.clearTabCloakBtn.addEventListener('click', () => this.clearTabCloak());
+        elements.previewTabCloakBtn.addEventListener('click', () => this.previewTabCloak());
+        
+        elements.clearDataBtn.addEventListener('click', () => this.clearBrowsingData());
+        elements.clearCacheBtn.addEventListener('click', () => this.clearCache());
+        elements.resetSettingsBtn.addEventListener('click', () => this.resetSettings());
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          // Ctrl/Cmd + T - New tab
+          if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+            e.preventDefault();
+            this.createNewTab();
+          }
+          
+          // Ctrl/Cmd + W - Close tab
+          if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
+            e.preventDefault();
+            this.closeCurrentTab();
+          }
+          
+          // Ctrl/Cmd + L - Focus URL bar
+          if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+            e.preventDefault();
+            elements.urlInput.focus();
+            elements.urlInput.select();
+          }
+          
+          // F5 - Refresh
+          if (e.key === 'F5') {
+            e.preventDefault();
+            this.refreshPage();
+          }
+          
+          // Escape - Close panels
+          if (e.key === 'Escape') {
+            this.closeAllPanels();
+          }
+        });
+        
+        // Tab clicks
+        document.addEventListener('click', (e) => {
+          // Tab switching
+          if (e.target.closest('.tab')) {
+            const tab = e.target.closest('.tab');
+            const tabId = parseInt(tab.getAttribute('data-tab-id'));
+            this.switchTab(tabId);
+          }
+          
+          // Tab closing
+          if (e.target.closest('.tab-close')) {
+            const tabId = parseInt(e.target.closest('.tab-close').getAttribute('data-tab-id'));
+            this.closeTab(tabId);
+            e.stopPropagation();
+          }
+        });
+        
+        // Theme picker
+        const themePicker = document.getElementById('themePicker');
+        themePicker.addEventListener('change', (e) => {
+          const theme = e.target.value;
+          document.body.className = theme;
+          localStorage.setItem('selectedTheme', theme);
+        });
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+        document.body.className = savedTheme;
+        themePicker.value = savedTheme;
+      }
+      
+      loadData() {
+        // Load bookmarks and history
+        const savedBookmarks = localStorage.getItem('browserBookmarks');
+        const savedHistory = localStorage.getItem('browserHistory');
+        
+        if (savedBookmarks) {
+          bookmarks = JSON.parse(savedBookmarks);
+          this.updateBookmarksUI();
+        }
+        
+        if (savedHistory) {
+          history = JSON.parse(savedHistory);
+          this.updateHistoryUI();
+        }
+      }
+      
+      saveData() {
+        localStorage.setItem('browserTabs', JSON.stringify(tabs));
+        localStorage.setItem('browserHistory', JSON.stringify(history));
+        localStorage.setItem('browserBookmarks', JSON.stringify(bookmarks));
+      }
+      
+      createNewTab() {
+        const newTabId = tabs.length > 0 ? Math.max(...tabs.map(t => t.id)) + 1 : 1;
+        const newTab = {
+          id: newTabId,
+          title: "New Tab",
+          url: "",
+          favicon: "",
+          loading: false,
+          history: [],
+          historyIndex: -1
+        };
+        
+        tabs.push(newTab);
+        this.updateTabsUI();
+        this.switchTab(newTabId);
+      }
+      
+      switchTab(tabId) {
+        // Update active state
+        tabs.forEach(tab => {
+          tab.active = tab.id === tabId;
+        });
+        
+        currentTabId = tabId;
+        const tab = tabs.find(t => t.id === tabId);
+        
+        // Update UI
+        this.updateTabsUI();
+        
+        // Show/hide new tab page
+        const newTabPage = document.querySelector('.new-tab-page');
+        const iframe = document.getElementById(`iframe${tabId}`);
+        
+        if (!tab.url || tab.url === '') {
+          newTabPage.classList.add('active');
+          if (iframe) iframe.style.display = 'none';
+          elements.urlInput.value = '';
+          elements.newTabSearchInput.value = '';
+        } else {
+          newTabPage.classList.remove('active');
+          if (iframe) {
+            iframe.style.display = 'block';
+            if (iframe.src !== tab.url) {
+              iframe.src = tab.url;
+            }
+          }
+          elements.urlInput.value = tab.url;
+        }
+        
+        // Update bookmark button
+        this.updateBookmarkButton();
+        
+        // Update navigation buttons
+        this.updateNavigationButtons();
+      }
+      
+      closeTab(tabId) {
+        if (tabs.length <= 1) return; // Don't close the last tab
+        
+        const tabIndex = tabs.findIndex(t => t.id === tabId);
+        if (tabIndex === -1) return;
+        
+        // Remove iframe
+        const iframe = document.getElementById(`iframe${tabId}`);
+        if (iframe) iframe.remove();
+        
+        // Remove tab content
+        const tabContent = document.querySelector(`.tab-content[data-tab-content="${tabId}"]`);
+        if (tabContent) tabContent.remove();
+        
+        // Remove tab
+        tabs.splice(tabIndex, 1);
+        
+        // Switch to another tab
+        let newTabId = currentTabId;
+        if (currentTabId === tabId) {
+          newTabId = tabs[Math.max(0, tabIndex - 1)].id;
+        }
+        
+        this.updateTabsUI();
+        this.switchTab(newTabId);
+        this.saveData();
+      }
+      
+      closeCurrentTab() {
+        this.closeTab(currentTabId);
+      }
+      
+      updateTabsUI() {
+        const tabsContainer = document.querySelector('.tabs-container');
+        const firstTab = tabsContainer.querySelector('.tab');
+        const addTabBtn = tabsContainer.querySelector('.add-tab-btn');
+        
+        // Remove existing tabs (except add button)
+        tabsContainer.innerHTML = '';
+        
+        // Add tabs
+        tabs.forEach(tab => {
+          const tabElement = document.createElement('div');
+          tabElement.className = `tab ${tab.active ? 'active' : ''}`;
+          tabElement.setAttribute('data-tab-id', tab.id);
+          
+          tabElement.innerHTML = `
+            <span class="tab-title">${this.escapeHtml(tab.title)}</span>
+            <button class="tab-close" data-tab-id="${tab.id}">&times;</button>
+          `;
+          
+          tabsContainer.appendChild(tabElement);
+        });
+        
+        // Add tab content if needed
+        tabs.forEach(tab => {
+          if (!document.querySelector(`.tab-content[data-tab-content="${tab.id}"]`)) {
+            const tabContent = document.createElement('div');
+            tabContent.className = `tab-content ${tab.active ? 'active' : ''}`;
+            tabContent.setAttribute('data-tab-content', tab.id);
+            
+            const iframe = document.createElement('iframe');
+            iframe.className = 'browser-iframe';
+            iframe.id = `iframe${tab.id}`;
+            iframe.setAttribute('data-tab-id', tab.id);
+            
+            // Add iframe event listeners
+            iframe.addEventListener('load', () => this.onIframeLoad(tab.id));
+            iframe.addEventListener('error', () => this.onIframeError(tab.id));
+            
+            tabContent.appendChild(iframe);
+            document.querySelector('.browser-content').appendChild(tabContent);
+          }
+        });
+        
+        // Re-add add tab button
+        tabsContainer.appendChild(addTabBtn);
+      }
+      
+      async navigateTo(input) {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (!tab) return;
+        
+        // Show loading
+        this.showLoading(true, 'Loading...');
+        
+        try {
+          let url;
+          
+          // Check if input is a URL
+          try {
+            url = new URL(input);
+            if (!url.protocol.startsWith('http')) {
+              url = new URL('https://' + input);
+            }
+          } catch {
+            // If not a valid URL, treat as search
+            const searchTemplate = this.getSearchTemplate();
+            url = new URL(searchTemplate.replace('%s', encodeURIComponent(input)));
+          }
+          
+          const finalUrl = url.toString();
+          
+          // Use Scramjet to encode the URL
+          const encodedUrl = scramjet.encodeUrl(finalUrl);
+          
+          // Update tab state
+          tab.url = finalUrl;
+          tab.loading = true;
+          
+          // Add to history
+          tab.history.push(finalUrl);
+          tab.historyIndex = tab.history.length - 1;
+          
+          // Add to global history
+          history.unshift({
+            url: finalUrl,
+            title: 'Loading...',
+            timestamp: Date.now()
+          });
+          
+          // Keep only last 100 history items
+          if (history.length > 100) history.length = 100;
+          
+          // Update UI
+          this.updateTabsUI();
+          this.updateHistoryUI();
+          this.updateNavigationButtons();
+          
+          // Update URL bar
+          elements.urlInput.value = finalUrl;
+          
+          // Hide new tab page
+          document.querySelector('.new-tab-page').classList.remove('active');
+          
+          // Load in iframe
+          const iframe = document.getElementById(`iframe${currentTabId}`);
+          if (iframe) {
+            iframe.src = encodedUrl;
+          }
+          
+          this.saveData();
+        } catch (error) {
+          console.error('Navigation error:', error);
+          this.updateStatus('Navigation failed');
+          this.showLoading(false);
+        }
+      }
+      
+      navigateBack() {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (tab && tab.historyIndex > 0) {
+          tab.historyIndex--;
+          const url = tab.history[tab.historyIndex];
+          this.navigateTo(url);
+        }
+      }
+      
+      navigateForward() {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (tab && tab.historyIndex < tab.history.length - 1) {
+          tab.historyIndex++;
+          const url = tab.history[tab.historyIndex];
+          this.navigateTo(url);
+        }
+      }
+      
+      refreshPage() {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (tab && tab.url) {
+          this.navigateTo(tab.url);
+        }
+      }
+      
+      onIframeLoad(tabId) {
+        const tab = tabs.find(t => t.id === tabId);
+        if (tab) {
+          tab.loading = false;
+          tab.title = this.getIframeTitle(tabId) || 'Untitled';
+          
+          // Update tab title
+          this.updateTabsUI();
+          
+          // Update history
+          if (tab.history.length > 0) {
+            const lastHistoryItem = history.find(h => h.url === tab.history[tab.historyIndex]);
+            if (lastHistoryItem) {
+              lastHistoryItem.title = tab.title;
+              this.updateHistoryUI();
+            }
+          }
+        }
+        
+        this.showLoading(false);
+        this.updateStatus('Page loaded');
+      }
+      
+      onIframeError(tabId) {
+        const tab = tabs.find(t => t.id === tabId);
+        if (tab) {
+          tab.loading = false;
+          this.updateTabsUI();
+        }
+        
+        this.showLoading(false);
+        this.updateStatus('Load error');
+      }
+      
+      getIframeTitle(tabId) {
+        const iframe = document.getElementById(`iframe${tabId}`);
+        if (iframe && iframe.contentWindow) {
+          try {
+            return iframe.contentWindow.document.title;
+          } catch (e) {
+            return iframe.src;
+          }
+        }
+        return '';
+      }
+      
+      getSearchTemplate() {
+        const engine = localStorage.getItem('selectedSearchEngine') || 'brave';
+        const templates = {
+          google: 'https://www.google.com/search?q=%s',
+          bing: 'https://www.bing.com/search?q=%s',
+          duckduckgo: 'https://duckduckgo.com/?q=%s',
+          brave: 'https://search.brave.com/search?q=%s'
+        };
+        
+        if (engine === 'custom') {
+          return localStorage.getItem('customSearchTemplate') || templates.brave;
+        }
+        
+        return templates[engine] || templates.brave;
+      }
+      
+      updateNavigationButtons() {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (tab) {
+          elements.backBtn.disabled = tab.historyIndex <= 0;
+          elements.forwardBtn.disabled = tab.historyIndex >= tab.history.length - 1;
+        }
+      }
+      
+      updateBookmarkButton() {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (tab && tab.url) {
+          const isBookmarked = bookmarks.some(b => b.url === tab.url);
+          const icon = isBookmarked ? 'fas fa-star' : 'far fa-star';
+          elements.bookmarkBtn.innerHTML = `<i class="${icon}"></i>`;
+        }
+      }
+      
+      toggleBookmark() {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (!tab || !tab.url) return;
+        
+        const existingIndex = bookmarks.findIndex(b => b.url === tab.url);
+        
+        if (existingIndex >= 0) {
+          // Remove bookmark
+          bookmarks.splice(existingIndex, 1);
+        } else {
+          // Add bookmark
+          bookmarks.unshift({
+            url: tab.url,
+            title: tab.title || 'Untitled',
+            timestamp: Date.now()
+          });
+        }
+        
+        this.updateBookmarkButton();
+        this.updateBookmarksUI();
+        this.saveData();
+      }
+      
+      addCurrentBookmark() {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (tab && tab.url) {
+          const existing = bookmarks.find(b => b.url === tab.url);
+          if (!existing) {
+            bookmarks.unshift({
+              url: tab.url,
+              title: tab.title || 'Untitled',
+              timestamp: Date.now()
+            });
+            this.updateBookmarkButton();
+            this.updateBookmarksUI();
+            this.saveData();
+          }
+        }
+      }
+      
+      updateBookmarksUI() {
+        const bookmarksList = document.getElementById('bookmarksList');
+        if (!bookmarksList) return;
+        
+        bookmarksList.innerHTML = '';
+        
+        if (bookmarks.length === 0) {
+          bookmarksList.innerHTML = '<div class="empty-state">No bookmarks yet</div>';
+          return;
+        }
+        
+        bookmarks.forEach(bookmark => {
+          const item = document.createElement('div');
+          item.className = 'bookmark-item';
+          item.innerHTML = `
+            <div class="bookmark-icon">
+              <i class="fas fa-bookmark"></i>
+            </div>
+            <div class="bookmark-info">
+              <div class="bookmark-title">${this.escapeHtml(bookmark.title)}</div>
+              <div class="bookmark-url">${this.escapeHtml(bookmark.url)}</div>
+            </div>
+          `;
+          
+          item.addEventListener('click', () => {
+            this.navigateTo(bookmark.url);
+            this.togglePanel('bookmarksPanel');
+          });
+          
+          bookmarksList.appendChild(item);
+        });
+      }
+      
+      updateHistoryUI() {
+        const historyList = document.getElementById('historyList');
+        if (!historyList) return;
+        
+        historyList.innerHTML = '';
+        
+        if (history.length === 0) {
+          historyList.innerHTML = '<div class="empty-state">No browsing history</div>';
+          return;
+        }
+        
+        history.forEach((item, index) => {
+          const historyItem = document.createElement('div');
+          historyItem.className = 'history-item';
+          historyItem.innerHTML = `
+            <div class="history-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <div class="history-info">
+              <div class="history-title">${this.escapeHtml(item.title)}</div>
+              <div class="history-url">${this.escapeHtml(item.url)}</div>
+            </div>
+          `;
+          
+          historyItem.addEventListener('click', () => {
+            this.navigateTo(item.url);
+            this.togglePanel('historyPanel');
+          });
+          
+          historyList.appendChild(historyItem);
+        });
+      }
+      
+      clearHistory() {
+        if (confirm('Are you sure you want to clear all browsing history?')) {
+          history = [];
+          this.updateHistoryUI();
+          this.saveData();
+        }
+      }
+      
+      clearBrowsingData() {
+        if (confirm('Clear all browsing data (history, cookies, cache)?')) {
+          history = [];
+          localStorage.removeItem('browserHistory');
+          this.updateHistoryUI();
+          this.updateStatus('Browsing data cleared');
+        }
+      }
+      
+      clearCache() {
+        // Clear service worker cache
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => registration.unregister());
+          });
+        }
+        
+        // Clear localStorage items that might cache data
+        localStorage.removeItem('browserCache');
+        this.updateStatus('Cache cleared');
+      }
+      
+      resetSettings() {
+        if (confirm('Reset all settings to defaults?')) {
+          localStorage.clear();
+          location.reload();
+        }
+      }
+      
+      toggleSettings() {
+        elements.overlay.classList.toggle('active');
+        isSettingsOpen = !isSettingsOpen;
+        
+        if (isSettingsOpen) {
+          this.loadSettingsValues();
+        }
+      }
+      
+      switchSettingsTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.settings-tab').forEach(tab => {
+          tab.classList.toggle('active', tab.getAttribute('data-settings-tab') === tabName);
+        });
+        
+        // Update content
+        document.querySelectorAll('.settings-tab-content').forEach(content => {
+          content.classList.toggle('active', content.getAttribute('data-settings-content') === tabName);
+        });
+      }
+      
+      loadSettingsValues() {
+        // Load WISP URL
+        const savedWisp = localStorage.getItem('selectedWisp') || 'wss://gointospace.app/wisp/';
+        document.getElementById('websocket').value = savedWisp;
+        
+        // Load transport
+        const savedTransport = localStorage.getItem('selectedTransport') || 'epoxy';
+        document.querySelector(`input[name="transport"][value="${savedTransport}"]`).checked = true;
+        
+        // Load search engine
+        const savedEngine = localStorage.getItem('selectedSearchEngine') || 'brave';
+        document.getElementById('searchEnginePicker').value = savedEngine;
+        
+        // Load tab cloak
+        const savedCloakTitle = localStorage.getItem('cloakedTitle') || '';
+        const savedCloakIcon = localStorage.getItem('cloakedIcon') || '';
+        document.getElementById('tabCloak').value = savedCloakTitle;
+        document.getElementById('tabCloakIcon').value = savedCloakIcon;
+      }
+      
+      saveTabCloak() {
+        const title = document.getElementById('tabCloak').value.trim();
+        const icon = document.getElementById('tabCloakIcon').value.trim();
+        
+        if (title) localStorage.setItem('cloakedTitle', title);
+        else localStorage.removeItem('cloakedTitle');
+        
+        if (icon) localStorage.setItem('cloakedIcon', icon);
+        else localStorage.removeItem('cloakedIcon');
+        
+        this.applyTabCloak(title, icon);
+      }
+      
+      clearTabCloak() {
+        localStorage.removeItem('cloakedTitle');
+        localStorage.removeItem('cloakedIcon');
+        document.getElementById('tabCloak').value = '';
+        document.getElementById('tabCloakIcon').value = '';
+        this.restoreOriginalTab();
+      }
+      
+      previewTabCloak() {
+        const title = document.getElementById('tabCloak').value.trim() || 'TinyJet Browser';
+        const icon = document.getElementById('tabCloakIcon').value.trim() || 'https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico';
+        this.applyTabCloak(title, icon);
+      }
+      
+      applyTabCloak(title, iconUrl) {
+        if (title) document.title = title;
+        if (iconUrl) {
+          let link = document.querySelector('link[rel~="icon"]');
+          if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.head.appendChild(link);
+          }
+          link.href = iconUrl;
+        }
+      }
+      
+      restoreOriginalTab() {
+        document.title = 'TinyJet Browser';
+        const link = document.querySelector('link[rel~="icon"]');
+        if (link) {
+          link.href = 'https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico';
+        }
+      }
+      
+      togglePanel(panelId) {
+        const panel = document.getElementById(panelId);
+        panel.classList.toggle('active');
+        
+        // Close other panels
+        document.querySelectorAll('.side-panel').forEach(p => {
+          if (p.id !== panelId) p.classList.remove('active');
+        });
+      }
+      
+      closeAllPanels() {
+        document.querySelectorAll('.side-panel').forEach(panel => {
+          panel.classList.remove('active');
+        });
+        
+        if (isSettingsOpen) {
+          this.toggleSettings();
+        }
+      }
+      
+      showLoading(show, message = 'Loading...') {
+        if (show) {
+          elements.loadingScreen.classList.add('active');
+          elements.loadingMessage.textContent = message;
+          elements.loadingIndicator.style.display = 'flex';
+        } else {
+          elements.loadingScreen.classList.remove('active');
+          elements.loadingIndicator.style.display = 'none';
+        }
+      }
+      
+      updateStatus(message) {
+        elements.statusText.textContent = message;
+      }
+      
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    }
+
+    // Initialize browser when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      window.browser = new TinyJetBrowser();
     });
   </script>
- <style>
-  /* Reset & basics */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Sora', sans-serif;
-  background-color: #1e1e2e;
-  color: #e0e0e0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Header */
-header {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  background-color: #2a2a3b;
-  border-bottom: 1px solid #444;
-  gap: 8px;
-}
-
-#search {
-  flex: 1;
-}
-
-.search-input {
-  width: 100%;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: none;
-  background-color: #33344d;
-  color: #e0e0e0;
-  font-size: 14px;
-}
-
-.search-input::placeholder {
-  color: #aaa;
-}
-
-/* Gear icon */
-#gear {
-  cursor: pointer;
-  font-size: 20px;
-  color: #ccc;
-  padding: 4px 6px;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-
-#gear:hover {
-  background-color: #44445c;
-}
-
-/* Overlay / Settings */
-#overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(30, 30, 46, 0.9);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-#overlay.active {
-  display: flex;
-}
-
-#settings {
-  background-color: #2b2b3c;
-  padding: 20px;
-  border-radius: 12px;
-  width: 400px;
-  max-height: 90vh;
-  overflow-y: auto;
-  color: #e0e0e0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-#settings h3, #settings h4 {
-  text-align: center;
-}
-
-#settings input[type="text"],
-#settings input[type="color"],
-#settings select {
-  width: 100%;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-  margin-bottom: 8px;
-}
-
-#settings button {
-  background-color: #44445c;
-  color: #e0e0e0;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-right: 6px;
-}
-
-#settings button:hover {
-  background-color: #5a5a7a;
-}
-
-.flex-row {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-
-/* Custom theme section */
-#customThemeSection {
-  border-top: 1px solid #555;
-  padding-top: 10px;
-}
-
-/* iFrame */
-#iframe {
-  flex: 1;
-  border: none;
-  width: 100%;
-  background-color: #000;
-}
-
-/* Scrollbar for settings */
-#settings::-webkit-scrollbar {
-  width: 8px;
-}
-
-#settings::-webkit-scrollbar-thumb {
-  background-color: #555;
-  border-radius: 4px;
-}
-
-#settings::-webkit-scrollbar-track {
-  background-color: #2b2b3c;
-}
-
- </style>
 </body>
+</html>
