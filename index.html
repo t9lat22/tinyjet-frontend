@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Browser</title>
+<title>Web Browser</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -20,34 +20,45 @@
     color: white;
   }
 
+  /* ===== TOP BAR ===== */
   header {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px;
+    gap: 8px;
+    padding: 8px;
     background: #2b2b2b;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
   button {
     background: #3a3a3a;
-    color: white;
     border: none;
+    color: white;
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
+  }
+
+  button:hover {
+    background: #4a4a4a;
   }
 
   input {
     background: #111;
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 999px;
+    padding: 8px 12px;
     outline: none;
   }
 
-  #url { flex: 1; }
-  #websocket { width: 260px; }
+  #url {
+    flex: 1;
+  }
+
+  #websocket {
+    width: 260px;
+  }
 
   iframe {
     flex: 1;
@@ -61,14 +72,15 @@
 <body>
 
 <header>
-  <button onclick="iframe.contentWindow.history.back()">◀</button>
-  <button onclick="iframe.contentWindow.history.forward()">▶</button>
-  <button onclick="iframe.contentWindow.location.reload()">⟳</button>
+  <button id="back">◀</button>
+  <button id="forward">▶</button>
+  <button id="reload">⟳</button>
 
   <form id="search" style="flex:1">
     <input id="url" type="text" placeholder="Search the web or enter URL">
   </form>
 
+  <!-- WISP INPUT (BACK IN HTML, VISIBLE) -->
   <form id="wisp">
     <input id="websocket" type="text" value="wss://gointospace.app/wisp/">
   </form>
@@ -76,13 +88,15 @@
 
 <iframe id="iframe"></iframe>
 
-<!-- IMPORTANT: same script loading as your working version -->
+<!-- Scramjet -->
 <script src="https://cdn.jsdelivr.net/gh/soap-phia/tinyjet@latest/tinyjet/scramjet.all.js" defer></script>
 
 <script type="module" defer>
 import * as BareMux from "https://cdn.jsdelivr.net/npm/@mercuryworkshop/bare-mux/dist/index.mjs";
 
-/* ===== SAME SCRAMJET INIT AS BEFORE ===== */
+const iframe = document.getElementById("iframe");
+
+/* ===== SCRAMJET INIT (UNCHANGED LOGIC) ===== */
 const { ScramjetController } = $scramjetLoadController();
 const scramjet = new ScramjetController({
   files: {
@@ -96,10 +110,10 @@ try {
   scramjet.init();
   navigator.serviceWorker.register("/sw.js");
 } catch (e) {
-  console.error("scramjet failed", e);
+  console.error("Scramjet failed", e);
 }
 
-/* ===== SAME BAREMUX SETUP ===== */
+/* ===== BAREMUX + WISP ===== */
 const connection = new BareMux.BareMuxConnection("/bareworker.js");
 
 function getWispUrl() {
@@ -114,13 +128,12 @@ async function setTransport() {
   );
 }
 
-/* ===== APPLY WISP (UNCHANGED BEHAVIOR) ===== */
 document.getElementById("wisp").addEventListener("submit", async e => {
   e.preventDefault();
   await setTransport();
 });
 
-/* ===== SEARCH LOGIC (UNCHANGED) ===== */
+/* ===== SEARCH ===== */
 function search(input) {
   try { return new URL(input).toString(); } catch {}
   try {
@@ -130,7 +143,6 @@ function search(input) {
   return "https://search.brave.com/search?q=" + encodeURIComponent(input);
 }
 
-/* ===== INITIALIZE PROXY FIRST ===== */
 await setTransport();
 
 /* ===== NAVIGATION ===== */
@@ -139,6 +151,15 @@ document.getElementById("search").addEventListener("submit", e => {
   const fixed = search(document.getElementById("url").value);
   iframe.src = scramjet.encodeUrl(fixed);
 });
+
+document.getElementById("back").onclick = () =>
+  iframe.contentWindow?.history.back();
+
+document.getElementById("forward").onclick = () =>
+  iframe.contentWindow?.history.forward();
+
+document.getElementById("reload").onclick = () =>
+  iframe.contentWindow?.location.reload();
 
 /* ===== START PAGE ===== */
 iframe.src = scramjet.encodeUrl("https://example.com");
