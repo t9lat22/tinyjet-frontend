@@ -17,17 +17,21 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       font-family: 'Inter', sans-serif;
+    }
+
+    body {
       background: #0f0f14;
       color: #ffffff;
-      height: 100vh;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* Top Navigation */
+    /* Top Navigation Bar */
     .top-nav {
       background: #1a1a23;
       height: 48px;
@@ -61,11 +65,22 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
+      font-size: 14px;
     }
 
     .nav-btn:hover {
       background: #2d2d3a;
       color: #ffffff;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .nav-btn:disabled:hover {
+      background: transparent;
+      color: #a0a0b0;
     }
 
     .nav-divider {
@@ -89,6 +104,8 @@
     .url-bar-icons {
       padding: 0 8px;
       color: #60a5fa;
+      display: flex;
+      gap: 8px;
     }
 
     .url-bar-form {
@@ -103,6 +120,7 @@
       font-size: 14px;
       padding: 6px 8px;
       outline: none;
+      font-family: 'Inter', sans-serif;
     }
 
     .url-input::placeholder {
@@ -121,6 +139,7 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
+      font-size: 14px;
     }
 
     .url-action-btn:hover {
@@ -195,6 +214,7 @@
       font-size: 18px;
       line-height: 1;
       transition: all 0.2s;
+      padding: 0;
     }
 
     .tab-close:hover {
@@ -214,6 +234,7 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
+      font-size: 14px;
     }
 
     .add-tab-btn:hover {
@@ -221,16 +242,21 @@
       color: #ffffff;
     }
 
-    /* Browser Content */
+    /* Browser Content Area */
     .browser-content {
       flex: 1;
       overflow: hidden;
       position: relative;
+      background: #ffffff;
     }
 
     .tab-content {
-      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 100%;
+      display: none;
     }
 
     .tab-content.active {
@@ -303,6 +329,7 @@
       top: 50%;
       transform: translateY(-50%);
       color: #6b7280;
+      z-index: 1;
     }
 
     .new-tab-search-input {
@@ -315,6 +342,7 @@
       font-size: 16px;
       outline: none;
       transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
     }
 
     .new-tab-search-input:focus {
@@ -332,6 +360,7 @@
       margin-bottom: 24px;
       color: #9ca3af;
       font-weight: 500;
+      font-size: 18px;
     }
 
     .quick-links-grid {
@@ -353,6 +382,7 @@
       cursor: pointer;
       transition: all 0.3s;
       border: 1px solid transparent;
+      text-decoration: none;
     }
 
     .quick-link:hover {
@@ -393,7 +423,7 @@
     }
 
     .loading-indicator {
-      display: flex;
+      display: none;
       align-items: center;
       gap: 6px;
     }
@@ -469,6 +499,7 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
+      padding: 0;
     }
 
     .close-settings-btn:hover {
@@ -493,6 +524,7 @@
       cursor: pointer;
       transition: all 0.2s;
       border-bottom: 3px solid transparent;
+      font-family: 'Inter', sans-serif;
     }
 
     .settings-tab.active {
@@ -547,6 +579,7 @@
       font-size: 14px;
       margin-bottom: 8px;
       transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
     }
 
     .settings-select:focus, .settings-input:focus {
@@ -605,6 +638,7 @@
       transition: all 0.2s;
       margin-right: 8px;
       margin-bottom: 8px;
+      font-family: 'Inter', sans-serif;
     }
 
     .settings-btn:hover {
@@ -728,6 +762,7 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
+      padding: 0;
     }
 
     .close-panel-btn:hover {
@@ -761,6 +796,7 @@
       justify-content: center;
       gap: 8px;
       transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
     }
 
     .panel-btn:hover {
@@ -798,6 +834,7 @@
       justify-content: center;
       color: #ffffff;
       font-size: 14px;
+      flex-shrink: 0;
     }
 
     .bookmark-info, .history-info {
@@ -820,6 +857,13 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #9ca3af;
+      padding: 40px 20px;
+      font-size: 14px;
     }
 
     /* Loading Screen */
@@ -937,430 +981,409 @@
   </style>
 </head>
 <body class="default">
-  <!-- HTML structure from your code above -->
-  <!-- ... (keep all your HTML structure as is) ... -->
+  <!-- Top Navigation Bar -->
+  <div class="top-nav">
+    <div class="nav-left">
+      <button class="nav-btn" id="backBtn" title="Back"><i class="fas fa-arrow-left"></i></button>
+      <button class="nav-btn" id="forwardBtn" title="Forward"><i class="fas fa-arrow-right"></i></button>
+      <button class="nav-btn" id="refreshBtn" title="Refresh"><i class="fas fa-redo"></i></button>
+      <div class="nav-divider"></div>
+    </div>
+    
+    <div class="nav-center">
+      <div class="url-bar-container">
+        <div class="url-bar-icons">
+          <i class="fas fa-lock" id="securityIcon" style="display:none;"></i>
+          <i class="fas fa-unlock" id="insecureIcon" style="display:none;"></i>
+        </div>
+        <form id="search" class="url-bar-form">
+          <input id="url" type="text" class="url-input" placeholder="Search or enter website address" autocomplete="off" spellcheck="false">
+        </form>
+        <div class="url-bar-actions">
+          <button class="url-action-btn" id="bookmarkBtn" title="Bookmark"><i class="far fa-star"></i></button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="nav-right">
+      <button class="nav-btn" id="newTabBtn" title="New Tab"><i class="fas fa-plus"></i></button>
+      <button class="nav-btn" id="bookmarksBtn" title="Bookmarks"><i class="fas fa-bookmark"></i></button>
+      <button class="nav-btn" id="historyBtn" title="History"><i class="fas fa-history"></i></button>
+      <div class="nav-divider"></div>
+      <button class="nav-btn" id="settingsBtn" title="Settings"><i class="fas fa-cog"></i></button>
+    </div>
+  </div>
+  
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tabs-container">
+      <div class="tab active" data-tab-id="1">
+        <span class="tab-title">New Tab</span>
+        <button class="tab-close" data-tab-id="1">&times;</button>
+      </div>
+      <button class="add-tab-btn" id="addTabBtn" title="Add new tab">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- New Tab Page -->
+  <div class="new-tab-page active" data-tab-content="1">
+    <div class="new-tab-content">
+      <div class="logo-container">
+        <div class="logo-icon">✈️</div>
+        <h1 class="logo-text">TinyJet</h1>
+      </div>
+      <div class="search-box-container">
+        <form id="newTabSearch" class="new-tab-search-form">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="new-tab-search-input" placeholder="Search the web or enter URL" autocomplete="off" spellcheck="false">
+          </div>
+        </form>
+      </div>
+      <div class="quick-links">
+        <h3 class="quick-links-title">Quick Links</h3>
+        <div class="quick-links-grid">
+          <div class="quick-link" data-url="https://google.com">
+            <div class="quick-link-icon"><i class="fab fa-google"></i></div>
+            <span class="quick-link-title">Google</span>
+          </div>
+          <div class="quick-link" data-url="https://youtube.com">
+            <div class="quick-link-icon"><i class="fab fa-youtube"></i></div>
+            <span class="quick-link-title">YouTube</span>
+          </div>
+          <div class="quick-link" data-url="https://github.com">
+            <div class="quick-link-icon"><i class="fab fa-github"></i></div>
+            <span class="quick-link-title">GitHub</span>
+          </div>
+          <div class="quick-link" data-url="https://wikipedia.org">
+            <div class="quick-link-icon"><i class="fab fa-wikipedia-w"></i></div>
+            <span class="quick-link-title">Wikipedia</span>
+          </div>
+          <div class="quick-link" data-url="https://reddit.com">
+            <div class="quick-link-icon"><i class="fab fa-reddit"></i></div>
+            <span class="quick-link-title">Reddit</span>
+          </div>
+          <div class="quick-link" data-url="https://twitter.com">
+            <div class="quick-link-icon"><i class="fab fa-twitter"></i></div>
+            <span class="quick-link-title">Twitter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Browser Content Area -->
+  <div class="browser-content">
+    <div class="tab-content active" data-tab-content="1">
+      <iframe class="browser-iframe" id="iframe1" data-tab-id="1"></iframe>
+    </div>
+  </div>
+  
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-left">
+      <span id="statusText">Ready</span>
+    </div>
+    <div class="status-right">
+      <span id="pageInfo"></span>
+      <div class="loading-indicator" id="loadingIndicator">
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Settings Overlay -->
+  <div id="overlay">
+    <div id="settings">
+      <div class="settings-header">
+        <h2><i class="fas fa-cog"></i> Settings</h2>
+        <button class="close-settings-btn" id="closeSettingsBtn">&times;</button>
+      </div>
+      
+      <div class="settings-tabs">
+        <button class="settings-tab active" data-settings-tab="general">General</button>
+        <button class="settings-tab" data-settings-tab="privacy">Privacy</button>
+        <button class="settings-tab" data-settings-tab="appearance">Appearance</button>
+        <button class="settings-tab" data-settings-tab="advanced">Advanced</button>
+      </div>
+      
+      <div class="settings-content">
+        <!-- General Tab -->
+        <div class="settings-tab-content active" data-settings-content="general">
+          <div class="setting-group">
+            <h4><i class="fas fa-search"></i> Search Engine</h4>
+            <select id="searchEnginePicker" class="settings-select">
+              <option value="brave">Brave (Default)</option>
+              <option value="google">Google</option>
+              <option value="bing">Bing</option>
+              <option value="duckduckgo">DuckDuckGo</option>
+              <option value="custom">Custom</option>
+            </select>
+            <div id="customSearchContainer" class="setting-hide">
+              <input id="customSearch" type="text" placeholder="https://search.example.com/search?q=%s" class="settings-input" />
+              <small class="setting-description">Use %s as placeholder for search query</small>
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <h4><i class="fas fa-home"></i> Homepage</h4>
+            <select id="homepagePicker" class="settings-select">
+              <option value="newtab">New Tab Page</option>
+              <option value="custom">Custom URL</option>
+            </select>
+            <div id="customHomepageContainer" class="setting-hide">
+              <input id="customHomepage" type="text" placeholder="https://example.com" class="settings-input" />
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <h4><i class="fas fa-download"></i> Downloads</h4>
+            <label class="setting-checkbox">
+              <input type="checkbox" id="askDownloadLocation">
+              <span>Ask where to save each file before downloading</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Privacy Tab -->
+        <div class="settings-tab-content" data-settings-content="privacy">
+          <div class="setting-group">
+            <h4><i class="fas fa-user-secret"></i> Tab Cloaking</h4>
+            <div class="setting-row">
+              <label for="tabCloak">Tab Title</label>
+              <input id="tabCloak" type="text" placeholder="e.g., Google Docs" class="settings-input" />
+            </div>
+            <div class="setting-row">
+              <label for="tabCloakIcon">Favicon URL</label>
+              <input id="tabCloakIcon" type="text" placeholder="https://example.com/favicon.ico" class="settings-input" />
+            </div>
+            <div class="setting-buttons">
+              <button id="saveTabCloakBtn" class="settings-btn primary">Save</button>
+              <button id="clearTabCloakBtn" class="settings-btn">Clear</button>
+              <button id="previewTabCloakBtn" class="settings-btn">Preview</button>
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <h4><i class="fas fa-cookie"></i> Cookies & Cache</h4>
+            <label class="setting-checkbox">
+              <input type="checkbox" id="clearOnExit">
+              <span>Clear browsing data on exit</span>
+            </label>
+            <div class="setting-buttons">
+              <button id="clearDataBtn" class="settings-btn">Clear Now</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Appearance Tab -->
+        <div class="settings-tab-content" data-settings-content="appearance">
+          <div class="setting-group">
+            <h4><i class="fas fa-palette"></i> Theme</h4>
+            <select id="themePicker" class="settings-select">
+              <option value="default">Default Dark</option>
+              <option value="light">Light</option>
+              <option value="latte">Catppuccin Latte</option>
+              <option value="frappe">Catppuccin Frappe</option>
+              <option value="macchiato">Catppuccin Macchiato</option>
+              <option value="mocha">Catppuccin Mocha</option>
+              <option value="mrworkshop">Mr. Workshop</option>
+              <option value="aerialite">Aerialite Labs</option>
+              <option value="custom">Custom Theme</option>
+            </select>
+            
+            <div id="customThemeSection" class="setting-hide">
+              <div class="setting-row">
+                <label for="customThemeName">Theme Name</label>
+                <input id="customThemeName" type="text" placeholder="My Theme" class="settings-input" />
+              </div>
+              <div class="setting-row">
+                <label for="customThemeBase">Primary Color</label>
+                <input id="customThemeBase" type="color" value="#1e1e2e" />
+              </div>
+              <div class="setting-row">
+                <label for="customThemeSurface">Secondary Color</label>
+                <input id="customThemeSurface" type="color" value="#2b2b3c" />
+              </div>
+              <div class="setting-row">
+                <label for="customThemeText">Text Color</label>
+                <input id="customThemeText" type="color" value="#e0e0e0" />
+              </div>
+              <div class="setting-buttons">
+                <button id="saveCustomThemeBtn" class="settings-btn primary">Save Theme</button>
+                <button id="applyCustomThemePreviewBtn" class="settings-btn">Preview</button>
+              </div>
+              
+              <div class="setting-row">
+                <label for="customThemesList">Saved Themes</label>
+                <select id="customThemesList" class="settings-select"></select>
+              </div>
+              <div class="setting-buttons">
+                <button id="applyCustomThemeBtn" class="settings-btn primary">Apply</button>
+                <button id="deleteCustomThemeBtn" class="settings-btn">Delete</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <h4><i class="fas fa-border-style"></i> Interface</h4>
+            <label class="setting-checkbox">
+              <input type="checkbox" id="compactMode">
+              <span>Compact mode (smaller UI elements)</span>
+            </label>
+            <label class="setting-checkbox">
+              <input type="checkbox" id="showBookmarksBar">
+              <span>Show bookmarks bar</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- Advanced Tab -->
+        <div class="settings-tab-content" data-settings-content="advanced">
+          <div class="setting-group">
+            <h4><i class="fas fa-server"></i> Proxy Settings</h4>
+            <div class="setting-row">
+              <label for="transportProtocol">Transport Protocol</label>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="transport" value="epoxy" checked> Epoxy (Default)
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="transport" value="libcurl"> Libcurl
+                </label>
+              </div>
+            </div>
+            
+            <div class="setting-row">
+              <label for="websocket">WISP Server</label>
+              <div class="input-with-button">
+                <input id="websocket" type="text" placeholder="wss://gointospace.app/wisp/" class="settings-input" />
+                <button id="setWispBtn" class="settings-btn primary">Set</button>
+              </div>
+              <small class="setting-description">WebSocket proxy server for bypassing restrictions</small>
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <h4><i class="fas fa-code"></i> Developer</h4>
+            <label class="setting-checkbox">
+              <input type="checkbox" id="devTools">
+              <span>Enable Developer Tools (F12)</span>
+            </label>
+            <div class="setting-buttons">
+              <button id="clearCacheBtn" class="settings-btn">Clear Cache</button>
+              <button id="resetSettingsBtn" class="settings-btn">Reset Settings</button>
+            </div>
+          </div>
+          
+          <div class="setting-group">
+            <h4><i class="fas fa-info-circle"></i> About</h4>
+            <div class="about-info">
+              <p><strong>TinyJet Browser</strong></p>
+              <p id="version">Version: Loading...</p>
+              <p>A lightweight, privacy-focused browser with built-in proxy capabilities.</p>
+              <p>Developed by <a href="https://aerialite.dev" target="_blank">Aerialite Labs</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bookmarks Panel -->
+  <div class="side-panel" id="bookmarksPanel">
+    <div class="panel-header">
+      <h3><i class="fas fa-bookmark"></i> Bookmarks</h3>
+      <button class="close-panel-btn" data-panel="bookmarksPanel">&times;</button>
+    </div>
+    <div class="panel-content">
+      <div class="bookmarks-list" id="bookmarksList">
+        <div class="empty-state">No bookmarks yet</div>
+      </div>
+      <div class="panel-actions">
+        <button class="panel-btn" id="addBookmarkBtn"><i class="fas fa-plus"></i> Add Current Page</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- History Panel -->
+  <div class="side-panel" id="historyPanel">
+    <div class="panel-header">
+      <h3><i class="fas fa-history"></i> History</h3>
+      <button class="close-panel-btn" data-panel="historyPanel">&times;</button>
+    </div>
+    <div class="panel-content">
+      <div class="history-list" id="historyList">
+        <div class="empty-state">No browsing history</div>
+      </div>
+      <div class="panel-actions">
+        <button class="panel-btn" id="clearHistoryBtn"><i class="fas fa-trash"></i> Clear History</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <div class="loading-spinner-large"></div>
+      <p id="loadingMessage">Loading...</p>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js" defer></script>
   <script type="module" defer>
-    // Import and initialization code
-    import * as BareMux from "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/index.mjs";
-
-    // Initialize browser state
-    let currentTabId = 1;
-    let tabs = [{ id: 1, title: "New Tab", url: "", favicon: "", loading: false, history: [], historyIndex: -1 }];
-    let history = [];
-    let bookmarks = [];
-    let version = "";
-    let isSettingsOpen = false;
-    let scramjet = null;
-    let connection = null;
+    // Simple browser implementation - will show UI immediately
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Browser loading...');
+      
+      // Initialize basic UI functionality first
+      initBasicUI();
+      
+      // Then load the proxy system
+      initProxySystem();
+    });
     
-    // DOM Elements
-    const elements = {
-      backBtn: document.getElementById('backBtn'),
-      forwardBtn: document.getElementById('forwardBtn'),
-      refreshBtn: document.getElementById('refreshBtn'),
-      newTabBtn: document.getElementById('newTabBtn'),
-      bookmarksBtn: document.getElementById('bookmarksBtn'),
-      historyBtn: document.getElementById('historyBtn'),
-      settingsBtn: document.getElementById('settingsBtn'),
-      addTabBtn: document.getElementById('addTabBtn'),
-      urlInput: document.getElementById('url'),
-      searchForm: document.getElementById('search'),
-      newTabSearchForm: document.getElementById('newTabSearch'),
-      newTabSearchInput: document.querySelector('.new-tab-search-input'),
-      loadingScreen: document.getElementById('loadingScreen'),
-      loadingMessage: document.getElementById('loadingMessage'),
-      statusText: document.getElementById('statusText'),
-      pageInfo: document.getElementById('pageInfo'),
-      loadingIndicator: document.getElementById('loadingIndicator'),
-      securityIcon: document.getElementById('securityIcon'),
-      insecureIcon: document.getElementById('insecureIcon'),
-      bookmarkBtn: document.getElementById('bookmarkBtn'),
-      overlay: document.getElementById('overlay'),
-      settings: document.getElementById('settings'),
-      closeSettingsBtn: document.getElementById('closeSettingsBtn'),
-      bookmarksPanel: document.getElementById('bookmarksPanel'),
-      historyPanel: document.getElementById('historyPanel'),
-      quickLinks: document.querySelectorAll('.quick-link'),
-      addBookmarkBtn: document.getElementById('addBookmarkBtn'),
-      clearHistoryBtn: document.getElementById('clearHistoryBtn'),
-      setWispBtn: document.getElementById('setWispBtn'),
-      saveTabCloakBtn: document.getElementById('saveTabCloakBtn'),
-      clearTabCloakBtn: document.getElementById('clearTabCloakBtn'),
-      previewTabCloakBtn: document.getElementById('previewTabCloakBtn'),
-      saveCustomThemeBtn: document.getElementById('saveCustomThemeBtn'),
-      applyCustomThemePreviewBtn: document.getElementById('applyCustomThemePreviewBtn'),
-      applyCustomThemeBtn: document.getElementById('applyCustomThemeBtn'),
-      deleteCustomThemeBtn: document.getElementById('deleteCustomThemeBtn'),
-      clearDataBtn: document.getElementById('clearDataBtn'),
-      clearCacheBtn: document.getElementById('clearCacheBtn'),
-      resetSettingsBtn: document.getElementById('resetSettingsBtn')
-    };
-
-    // Browser functionality
-    class TinyJetBrowser {
-      constructor() {
-        this.initState();
-        this.initScramjet();
-        this.initEventListeners();
-        this.loadData();
-      }
+    function initBasicUI() {
+      console.log('Initializing basic UI...');
       
-      initState() {
-        // Load saved data
-        const savedTabs = localStorage.getItem('browserTabs');
-        const savedHistory = localStorage.getItem('browserHistory');
-        const savedBookmarks = localStorage.getItem('browserBookmarks');
-        
-        if (savedTabs) tabs = JSON.parse(savedTabs);
-        if (savedHistory) history = JSON.parse(savedHistory);
-        if (savedBookmarks) bookmarks = JSON.parse(savedBookmarks);
-        
-        // Initialize tabs if none exist
-        if (!tabs.length) {
-          tabs = [{ id: 1, title: "New Tab", url: "", favicon: "", loading: false, history: [], historyIndex: -1 }];
-        }
-        
-        // Update UI
-        this.updateTabsUI();
-        this.updateBookmarksUI();
-        this.updateHistoryUI();
-        
-        // Set current tab
-        const activeTab = tabs.find(t => t.active) || tabs[0];
-        if (activeTab) {
-          this.switchTab(activeTab.id);
-        }
-        
-        // Update status
-        this.updateStatus('Ready');
-      }
+      // Get DOM elements
+      const elements = {
+        backBtn: document.getElementById('backBtn'),
+        forwardBtn: document.getElementById('forwardBtn'),
+        refreshBtn: document.getElementById('refreshBtn'),
+        newTabBtn: document.getElementById('newTabBtn'),
+        bookmarksBtn: document.getElementById('bookmarksBtn'),
+        historyBtn: document.getElementById('historyBtn'),
+        settingsBtn: document.getElementById('settingsBtn'),
+        addTabBtn: document.getElementById('addTabBtn'),
+        urlInput: document.getElementById('url'),
+        searchForm: document.getElementById('search'),
+        newTabSearchForm: document.getElementById('newTabSearch'),
+        newTabSearchInput: document.querySelector('.new-tab-search-input'),
+        bookmarkBtn: document.getElementById('bookmarkBtn'),
+        overlay: document.getElementById('overlay'),
+        settings: document.getElementById('settings'),
+        closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+        bookmarksPanel: document.getElementById('bookmarksPanel'),
+        historyPanel: document.getElementById('historyPanel'),
+        quickLinks: document.querySelectorAll('.quick-link'),
+        addBookmarkBtn: document.getElementById('addBookmarkBtn'),
+        clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+        setWispBtn: document.getElementById('setWispBtn'),
+        saveTabCloakBtn: document.getElementById('saveTabCloakBtn'),
+        clearTabCloakBtn: document.getElementById('clearTabCloakBtn'),
+        previewTabCloakBtn: document.getElementById('previewTabCloakBtn')
+      };
       
-      async initScramjet() {
-        // Fetch version
-        try {
-          const resp = await fetch('https://api.github.com/repos/AerialiteLabs/tinyjet-frontend/commits?per_page=1');
-          if (resp.ok) {
-            const data = await resp.json();
-            const sha = Array.isArray(data) && data[0] && data[0].sha ? data[0].sha : (data.sha || '');
-            if (sha) {
-              version = sha.slice(0, 7);
-              document.getElementById('version').textContent = `Version: ${version}`;
-            }
-          }
-        } catch (e) {
-          console.debug('Could not fetch version:', e.message);
-          version = "Unknown";
-        }
-
-        // Initialize Scramjet
-        const { ScramjetController } = $scramjetLoadController();
-        scramjet = new ScramjetController({ 
-          files: { 
-            wasm: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/wasm.wasm", 
-            all: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js", 
-            sync: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.sync.js" 
-          } 
-        });
-
-        try {
-          scramjet.init();
-          navigator.serviceWorker.register("./sw.js");
-        } catch (e) { 
-          console.error("Scramjet failed to initialize:", e); 
-          this.updateStatus('Proxy initialization failed');
-        }
-
-        // Initialize BareMux connection
-        const bareworker = `data:application/javascript;base64,IWZ1bmN0aW9uKCl7InVzZSBzdHJpY3QiO2NvbnN0IGU9TWVzc2FnZVBvcnQucHJvdG90eXBlLnBvc3RNZXNzYWdlO2xldCB0PW51bGw7ZnVuY3Rpb24gYShlLHQsYSl7Y29uc29sZS5lcnJvcihgZXJyb3Igd2hpbGUgcHJvY2Vzc2luZyAnJHthfSc6IGAsdCksZS5wb3N0TWVzc2FnZSh7dHlwZToiZXJyb3IiLGVycm9yOnR9KX1hc3luYyBmdW5jdGlvbiBuKGEsbixzKXtjb25zdCBvPWF3YWl0IHMucmVxdWVzdChuZXcgVVJMKGEuZmV0Y2gucmVtb3RlKSxhLmZldGNoLm1ldGhvZCxhLmZldGNoLmJvZHksYS5mZXRjaC5oZWFkZXJzLG51bGwpO2lmKCFmdW5jdGlvbigpe2lmKG51bGw9PT10KXtjb25zdCBhPW5ldyBNZXNzYWdlQ2hhbm5lbCxuPW5ldyBSZWFkYWJsZVN0cmVhbTtsZXQgczt0cnl7ZS5jYWxsKGEucG9ydDEsbixbbl0pLHM9ITB9Y2F0Y2goZSl7cz0hMX1yZXR1cm4gdD1zLHN9cmV0dXJuIHR9KCkmJm8uYm9keSBpbnN0YW5jZW9mIFJlYWRhYmxlU3RyZWFtKXtjb25zdCBlPW5ldyBSZXNwb25zZShvLmJvZHkpO28uYm9keT1hd2FpdCBlLmFycmF5QnVmZmVyKCl9by5ib2R5IGluc3RhbmNlb2YgUmVhZGFibGVTdHJlYW18fG8uYm9keSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyP2UuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30sW28uYm9keV0pOmUuY2FsbChuLHt0eXBlOiJmZXRjaCIsZmV0Y2g6b30pfWxldCBzPW51bGwsbz0iIjtmdW5jdGlvbiBjKCl7cmV0dXJuIG5ldyBFcnJvcigidGhlcmUgYXJlIG5vIGJhcmUgY2xpZW50cyIse2NhdXNlOiJObyBCYXJlVHJhbnNwb3J0IHdhcyBzZXQuIFRyeSBjcmVhdGluZyBhIEJhcmVNdXhDb25uZWN0aW9uIGFuZCBjYWxsaW5nIHNldFRyYW5zcG9ydCgpIG9yIHNldE1hbnVhbFRyYW5zcG9ydCgpIG9uIGl0IGJlZm9yZSB1c2luZyBCYXJlQ2xpZW50LiJ9KX1mdW5jdGlvbiByKHQsYSl7Y29uc3Qgbj1zO2xldCBvPVthXTt0LmZldGNoPy5ib2R5JiZvLnB1c2godC5mZXRjaC5ib2R5KSx0LndlYnNvY2tldD8uY2hhbm5lbCYmby5wdXNoKHQud2Vic29ja2V0LmNoYW5uZWwpLGUuY2FsbChuLHttZXNzYWdlOnQscG9ydDphfSxvKX1mdW5jdGlvbiBsKHQpe3Qub25tZXNzYWdlPWFzeW5jIHQ9Pntjb25zdCBsPXQuZGF0YS5wb3J0LGk9dC5kYXRhLm1lc3NhZ2U7aWYoInBpbmciPT09aS50eXBlKWUuY2FsbChsLHt0eXBlOiJwb25nIn0pO2Vsc2UgaWYoInNldCI9PT1pLnR5cGUpdHJ5e2NvbnN0IHQ9YXN5bmMgZnVuY3Rpb24oKXt9LmNvbnN0cnVjdG9yO2lmKCJiYXJlLW11eC1yZW1vdGUiPT09aS5jbGllbnQuZnVuY3Rpb24pcz1pLmNsaWVudC5hcmdzWzBdLG89YGJhcmUtbXV4LXJlbW90ZSAoJHtpLmNsaWVudC5hcmdzWzFdfSlgO2Vsc2V7Y29uc3QgZT1uZXcgdChpLmNsaWVudC5mdW5jdGlvbiksW2Esbl09YXdhaXQgZSgpO3M9bmV3IGEoLi4uaS5jbGllbnQuYXJncyksbz1ufWNvbnNvbGUubG9nKCJzZXQgdHJhbnNwb3J0IHRvICIscyxvKSxlLmNhbGwobCx7dHlwZToic2V0In0pfWNhdGNoKGUpe2EobCxlLCJzZXQiKX1lbHNlIGlmKCJnZXQiPT09aS50eXBlKWwucG9zdE1lc3NhZ2Uoe3R5cGU6ImdldCIsbmFtZTpvfSk7ZWxzZSBpZigiZmV0Y2giPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBuKGksbCxzKX1jYXRjaChlKXthKGwsZSwiZmV0Y2giKX1lbHNlIGlmKCJ3ZWJzb2NrZXQiPT09aS50eXBlKXRyeXtpZighcyl0aHJvdyBjKCk7aWYocyBpbnN0YW5jZW9mIE1lc3NhZ2VQb3J0KXJldHVybiB2b2lkIHIoaSxsKTtzLnJlYWR5fHxhd2FpdCBzLmluaXQoKSxhd2FpdCBhc3luYyBmdW5jdGlvbih0LGEsbil7Y29uc3RbcyxvXT1uLmNvbm5lY3QobmV3IFVSTCh0LndlYnNvY2tldC51cmwpLHQud2Vic29ja2V0LnByb3RvY29scyx0LndlYnNvY2tldC5yZXF1ZXN0SGVhZGVycywoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJvcGVuIixhcmdzOlthXX0pfSksKGE9Pnt7YSBpbnN0YW5jZW9mIEFycmF5QnVmZmVyPyhlLmNhbGwodC53ZWJzb2NrZXQuY2hhbm5lbCx7dHlwZToibWVzc2FnZSIsYXJnczpbYV19LFthXSk6ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6Im1lc3NhZ2UiLGFyZ3M6W2FdfSkpfSksKChhLG4pPT57ZS5jYWxsKHQud2Vic29ja2V0LmNoYW5uZWwse3R5cGU6ImNsb3NlIixhcmdzOlthLG5dfSl9KSwoYT0+e2UuY2FsbCh0LndlYnNvY2tldC5jaGFubmVsLHt0eXBlOiJlcnJvciIsYXJnczpbYV19KX0pKTt0LndlYnNvY2tldC5jaGFubmVsLm9ubWVzc2FnZT1lPT57ImRhdGEiPT09ZS5kYXRhLnR5cGU/cyhlLmRhdGEuZGF0YSk6ImNsb3NlIj09PWUuZGF0YS50eXBlJiZvKGUuZGF0YS5jbG9zZUNvZGUsZS5kYXRhLmNsb3NlUmVhc29uKX0sZS5jYWxsKGEse3R5cGU6IndlYnNvY2tldCJ9KX0oaSxsLHMpfWNhdGNoKGUpe2EobCxlLCJ3ZWJzb2NrZXQiKX19fW5ldyBCcm9hZGNhc3RDaGFubmVsKCJiYXJlLW11eCIpLnBvc3RNZXNzYWdlKHt0eXBlOiJyZWZyZXNoUG9ydCJ9KSxzZWxmLm9uY29ubmVjdD1lPT57bChlLnBvcnRzWzBdKX0sY29uc29sZS5kZWJ1ZygiYmFyZS1tdXg6IHJ1bm5pbmcgdjIuMS43IChidWlsZCBjNTZkMjg2KSIpfSgpOw==`;
-        
-        connection = new BareMux.BareMuxConnection(bareworker);
-        
-        // Set default transport
-        const savedTransport = localStorage.getItem('selectedTransport') || 'epoxy';
-        const savedWisp = localStorage.getItem('selectedWisp') || 'wss://gointospace.app/wisp/';
-        this.setTransport(savedTransport, savedWisp);
-        
-        this.updateStatus('Proxy initialized');
-      }
+      // Simple tab management
+      let currentTabId = 1;
+      let tabs = [{ id: 1, title: "New Tab", url: "", favicon: "", loading: false }];
       
-      async setTransport(transport, wispUrl) {
-        try {
-          switch (transport) {
-            case "epoxy":
-              await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
-              break;
-            case "libcurl":
-              await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/libcurl-transport/dist/index.mjs", [{ websocket: wispUrl }]);
-              break;
-            default:
-              await connection.setTransport("https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport/dist/index.mjs", [{ wisp: wispUrl }]);
-          }
-          localStorage.setItem('selectedTransport', transport);
-          localStorage.setItem('selectedWisp', wispUrl);
-          return true;
-        } catch (e) {
-          console.error('Failed to set transport:', e);
-          this.updateStatus('Transport error');
-          return false;
-        }
-      }
-      
-      initEventListeners() {
-        // Navigation buttons
-        elements.backBtn.addEventListener('click', () => this.navigateBack());
-        elements.forwardBtn.addEventListener('click', () => this.navigateForward());
-        elements.refreshBtn.addEventListener('click', () => this.refreshPage());
-        
-        // Tab management
-        elements.newTabBtn.addEventListener('click', () => this.createNewTab());
-        elements.addTabBtn.addEventListener('click', () => this.createNewTab());
-        
-        // Panels
-        elements.bookmarksBtn.addEventListener('click', () => this.togglePanel('bookmarksPanel'));
-        elements.historyBtn.addEventListener('click', () => this.togglePanel('historyPanel'));
-        elements.settingsBtn.addEventListener('click', () => this.toggleSettings());
-        
-        // URL bar
-        elements.searchForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          this.navigateTo(elements.urlInput.value);
-        });
-        
-        elements.newTabSearchForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          this.navigateTo(elements.newTabSearchInput.value);
-        });
-        
-        // Quick links
-        elements.quickLinks.forEach(link => {
-          link.addEventListener('click', (e) => {
-            const url = e.currentTarget.getAttribute('data-url');
-            this.navigateTo(url);
-          });
-        });
-        
-        // Bookmark button
-        elements.bookmarkBtn.addEventListener('click', () => this.toggleBookmark());
-        elements.addBookmarkBtn.addEventListener('click', () => this.addCurrentBookmark());
-        elements.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
-        
-        // Settings
-        elements.closeSettingsBtn.addEventListener('click', () => this.toggleSettings());
-        elements.overlay.addEventListener('click', (e) => {
-          if (e.target === elements.overlay) this.toggleSettings();
-        });
-        
-        // Close panel buttons
-        document.querySelectorAll('.close-panel-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const panel = e.target.getAttribute('data-panel');
-            this.togglePanel(panel);
-          });
-        });
-        
-        // Settings tabs
-        document.querySelectorAll('.settings-tab').forEach(tab => {
-          tab.addEventListener('click', (e) => {
-            const tabName = e.target.getAttribute('data-settings-tab');
-            this.switchSettingsTab(tabName);
-          });
-        });
-        
-        // Settings controls
-        elements.setWispBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const wispUrl = document.getElementById('websocket').value;
-          const transport = document.querySelector('input[name="transport"]:checked').value;
-          this.setTransport(transport, wispUrl);
-        });
-        
-        elements.saveTabCloakBtn.addEventListener('click', () => this.saveTabCloak());
-        elements.clearTabCloakBtn.addEventListener('click', () => this.clearTabCloak());
-        elements.previewTabCloakBtn.addEventListener('click', () => this.previewTabCloak());
-        
-        elements.clearDataBtn.addEventListener('click', () => this.clearBrowsingData());
-        elements.clearCacheBtn.addEventListener('click', () => this.clearCache());
-        elements.resetSettingsBtn.addEventListener('click', () => this.resetSettings());
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-          // Ctrl/Cmd + T - New tab
-          if ((e.ctrlKey || e.metaKey) && e.key === 't') {
-            e.preventDefault();
-            this.createNewTab();
-          }
-          
-          // Ctrl/Cmd + W - Close tab
-          if ((e.ctrlKey || e.metaKey) && e.key === 'w') {
-            e.preventDefault();
-            this.closeCurrentTab();
-          }
-          
-          // Ctrl/Cmd + L - Focus URL bar
-          if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
-            e.preventDefault();
-            elements.urlInput.focus();
-            elements.urlInput.select();
-          }
-          
-          // F5 - Refresh
-          if (e.key === 'F5') {
-            e.preventDefault();
-            this.refreshPage();
-          }
-          
-          // Escape - Close panels
-          if (e.key === 'Escape') {
-            this.closeAllPanels();
-          }
-        });
-        
-        // Tab clicks
-        document.addEventListener('click', (e) => {
-          // Tab switching
-          if (e.target.closest('.tab')) {
-            const tab = e.target.closest('.tab');
-            const tabId = parseInt(tab.getAttribute('data-tab-id'));
-            this.switchTab(tabId);
-          }
-          
-          // Tab closing
-          if (e.target.closest('.tab-close')) {
-            const tabId = parseInt(e.target.closest('.tab-close').getAttribute('data-tab-id'));
-            this.closeTab(tabId);
-            e.stopPropagation();
-          }
-        });
-        
-        // Theme picker
-        const themePicker = document.getElementById('themePicker');
-        themePicker.addEventListener('change', (e) => {
-          const theme = e.target.value;
-          document.body.className = theme;
-          localStorage.setItem('selectedTheme', theme);
-        });
-        
-        // Load saved theme
-        const savedTheme = localStorage.getItem('selectedTheme') || 'default';
-        document.body.className = savedTheme;
-        themePicker.value = savedTheme;
-      }
-      
-      loadData() {
-        // Load bookmarks and history
-        const savedBookmarks = localStorage.getItem('browserBookmarks');
-        const savedHistory = localStorage.getItem('browserHistory');
-        
-        if (savedBookmarks) {
-          bookmarks = JSON.parse(savedBookmarks);
-          this.updateBookmarksUI();
-        }
-        
-        if (savedHistory) {
-          history = JSON.parse(savedHistory);
-          this.updateHistoryUI();
-        }
-      }
-      
-      saveData() {
-        localStorage.setItem('browserTabs', JSON.stringify(tabs));
-        localStorage.setItem('browserHistory', JSON.stringify(history));
-        localStorage.setItem('browserBookmarks', JSON.stringify(bookmarks));
-      }
-      
-      createNewTab() {
-        const newTabId = tabs.length > 0 ? Math.max(...tabs.map(t => t.id)) + 1 : 1;
-        const newTab = {
-          id: newTabId,
-          title: "New Tab",
-          url: "",
-          favicon: "",
-          loading: false,
-          history: [],
-          historyIndex: -1
-        };
-        
-        tabs.push(newTab);
-        this.updateTabsUI();
-        this.switchTab(newTabId);
-      }
-      
-      switchTab(tabId) {
-        // Update active state
-        tabs.forEach(tab => {
-          tab.active = tab.id === tabId;
-        });
-        
-        currentTabId = tabId;
-        const tab = tabs.find(t => t.id === tabId);
-        
-        // Update UI
-        this.updateTabsUI();
-        
-        // Show/hide new tab page
-        const newTabPage = document.querySelector('.new-tab-page');
-        const iframe = document.getElementById(`iframe${tabId}`);
-        
-        if (!tab.url || tab.url === '') {
-          newTabPage.classList.add('active');
-          if (iframe) iframe.style.display = 'none';
-          elements.urlInput.value = '';
-          elements.newTabSearchInput.value = '';
-        } else {
-          newTabPage.classList.remove('active');
-          if (iframe) {
-            iframe.style.display = 'block';
-            if (iframe.src !== tab.url) {
-              iframe.src = tab.url;
-            }
-          }
-          elements.urlInput.value = tab.url;
-        }
-        
-        // Update bookmark button
-        this.updateBookmarkButton();
-        
-        // Update navigation buttons
-        this.updateNavigationButtons();
-      }
-      
-      closeTab(tabId) {
-        if (tabs.length <= 1) return; // Don't close the last tab
-        
-        const tabIndex = tabs.findIndex(t => t.id === tabId);
-        if (tabIndex === -1) return;
-        
-        // Remove iframe
-        const iframe = document.getElementById(`iframe${tabId}`);
-        if (iframe) iframe.remove();
-        
-        // Remove tab content
-        const tabContent = document.querySelector(`.tab-content[data-tab-content="${tabId}"]`);
-        if (tabContent) tabContent.remove();
-        
-        // Remove tab
-        tabs.splice(tabIndex, 1);
-        
-        // Switch to another tab
-        let newTabId = currentTabId;
-        if (currentTabId === tabId) {
-          newTabId = tabs[Math.max(0, tabIndex - 1)].id;
-        }
-        
-        this.updateTabsUI();
-        this.switchTab(newTabId);
-        this.saveData();
-      }
-      
-      closeCurrentTab() {
-        this.closeTab(currentTabId);
-      }
-      
-      updateTabsUI() {
+      // Update tab UI
+      function updateTabsUI() {
         const tabsContainer = document.querySelector('.tabs-container');
-        const firstTab = tabsContainer.querySelector('.tab');
         const addTabBtn = tabsContainer.querySelector('.add-tab-btn');
         
         // Remove existing tabs (except add button)
@@ -1373,490 +1396,370 @@
           tabElement.setAttribute('data-tab-id', tab.id);
           
           tabElement.innerHTML = `
-            <span class="tab-title">${this.escapeHtml(tab.title)}</span>
+            <span class="tab-title">${escapeHtml(tab.title)}</span>
             <button class="tab-close" data-tab-id="${tab.id}">&times;</button>
           `;
           
           tabsContainer.appendChild(tabElement);
         });
         
-        // Add tab content if needed
-        tabs.forEach(tab => {
-          if (!document.querySelector(`.tab-content[data-tab-content="${tab.id}"]`)) {
-            const tabContent = document.createElement('div');
-            tabContent.className = `tab-content ${tab.active ? 'active' : ''}`;
-            tabContent.setAttribute('data-tab-content', tab.id);
-            
-            const iframe = document.createElement('iframe');
-            iframe.className = 'browser-iframe';
-            iframe.id = `iframe${tab.id}`;
-            iframe.setAttribute('data-tab-id', tab.id);
-            
-            // Add iframe event listeners
-            iframe.addEventListener('load', () => this.onIframeLoad(tab.id));
-            iframe.addEventListener('error', () => this.onIframeError(tab.id));
-            
-            tabContent.appendChild(iframe);
-            document.querySelector('.browser-content').appendChild(tabContent);
-          }
-        });
-        
         // Re-add add tab button
         tabsContainer.appendChild(addTabBtn);
       }
       
-      async navigateTo(input) {
+      // Switch tab
+      function switchTab(tabId) {
+        tabs.forEach(tab => {
+          tab.active = tab.id === tabId;
+        });
+        
+        currentTabId = tabId;
+        const tab = tabs.find(t => t.id === tabId);
+        
+        // Update UI
+        updateTabsUI();
+        
+        // Show/hide new tab page
+        const newTabPage = document.querySelector('.new-tab-page');
+        if (!tab.url || tab.url === '') {
+          newTabPage.classList.add('active');
+          elements.urlInput.value = '';
+          elements.newTabSearchInput.value = '';
+        } else {
+          newTabPage.classList.remove('active');
+          elements.urlInput.value = tab.url;
+        }
+      }
+      
+      // Create new tab
+      function createNewTab() {
+        const newTabId = tabs.length > 0 ? Math.max(...tabs.map(t => t.id)) + 1 : 1;
+        const newTab = {
+          id: newTabId,
+          title: "New Tab",
+          url: "",
+          favicon: "",
+          loading: false
+        };
+        
+        tabs.push(newTab);
+        updateTabsUI();
+        switchTab(newTabId);
+      }
+      
+      // Close tab
+      function closeTab(tabId) {
+        if (tabs.length <= 1) return;
+        
+        const tabIndex = tabs.findIndex(t => t.id === tabId);
+        if (tabIndex === -1) return;
+        
+        tabs.splice(tabIndex, 1);
+        
+        let newTabId = currentTabId;
+        if (currentTabId === tabId) {
+          newTabId = tabs[Math.max(0, tabIndex - 1)].id;
+        }
+        
+        updateTabsUI();
+        switchTab(newTabId);
+      }
+      
+      // Navigate to URL
+      function navigateTo(input) {
         const tab = tabs.find(t => t.id === currentTabId);
         if (!tab) return;
         
-        // Show loading
-        this.showLoading(true, 'Loading...');
+        let url;
         
+        // Check if input is a URL
         try {
-          let url;
+          url = new URL(input);
+          if (!url.protocol.startsWith('http')) {
+            url = new URL('https://' + input);
+          }
+        } catch {
+          // If not a valid URL, treat as search
+          const searchTemplate = 'https://www.google.com/search?q=%s';
+          url = new URL(searchTemplate.replace('%s', encodeURIComponent(input)));
+        }
+        
+        const finalUrl = url.toString();
+        
+        // Update tab state
+        tab.url = finalUrl;
+        tab.title = 'Loading...';
+        
+        // Update UI
+        updateTabsUI();
+        elements.urlInput.value = finalUrl;
+        
+        // Hide new tab page
+        document.querySelector('.new-tab-page').classList.remove('active');
+        
+        // Load in iframe
+        const iframe = document.getElementById(`iframe${currentTabId}`);
+        if (iframe) {
+          // Show loading
+          document.getElementById('statusText').textContent = 'Loading...';
+          document.getElementById('loadingIndicator').style.display = 'flex';
           
-          // Check if input is a URL
-          try {
-            url = new URL(input);
-            if (!url.protocol.startsWith('http')) {
-              url = new URL('https://' + input);
+          iframe.src = finalUrl;
+          
+          // When iframe loads
+          iframe.onload = function() {
+            try {
+              tab.title = iframe.contentWindow.document.title || finalUrl;
+              updateTabsUI();
+              document.getElementById('statusText').textContent = 'Loaded';
+            } catch (e) {
+              tab.title = finalUrl;
+              updateTabsUI();
+              document.getElementById('statusText').textContent = 'Loaded';
             }
-          } catch {
-            // If not a valid URL, treat as search
-            const searchTemplate = this.getSearchTemplate();
-            url = new URL(searchTemplate.replace('%s', encodeURIComponent(input)));
-          }
+            document.getElementById('loadingIndicator').style.display = 'none';
+          };
           
-          const finalUrl = url.toString();
-          
-          // Use Scramjet to encode the URL
-          const encodedUrl = scramjet.encodeUrl(finalUrl);
-          
-          // Update tab state
-          tab.url = finalUrl;
-          tab.loading = true;
-          
-          // Add to history
-          tab.history.push(finalUrl);
-          tab.historyIndex = tab.history.length - 1;
-          
-          // Add to global history
-          history.unshift({
-            url: finalUrl,
-            title: 'Loading...',
-            timestamp: Date.now()
-          });
-          
-          // Keep only last 100 history items
-          if (history.length > 100) history.length = 100;
-          
-          // Update UI
-          this.updateTabsUI();
-          this.updateHistoryUI();
-          this.updateNavigationButtons();
-          
-          // Update URL bar
-          elements.urlInput.value = finalUrl;
-          
-          // Hide new tab page
-          document.querySelector('.new-tab-page').classList.remove('active');
-          
-          // Load in iframe
-          const iframe = document.getElementById(`iframe${currentTabId}`);
-          if (iframe) {
-            iframe.src = encodedUrl;
-          }
-          
-          this.saveData();
-        } catch (error) {
-          console.error('Navigation error:', error);
-          this.updateStatus('Navigation failed');
-          this.showLoading(false);
+          iframe.onerror = function() {
+            tab.title = 'Error loading page';
+            updateTabsUI();
+            document.getElementById('statusText').textContent = 'Error loading page';
+            document.getElementById('loadingIndicator').style.display = 'none';
+          };
         }
       }
       
-      navigateBack() {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (tab && tab.historyIndex > 0) {
-          tab.historyIndex--;
-          const url = tab.history[tab.historyIndex];
-          this.navigateTo(url);
-        }
-      }
-      
-      navigateForward() {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (tab && tab.historyIndex < tab.history.length - 1) {
-          tab.historyIndex++;
-          const url = tab.history[tab.historyIndex];
-          this.navigateTo(url);
-        }
-      }
-      
-      refreshPage() {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (tab && tab.url) {
-          this.navigateTo(tab.url);
-        }
-      }
-      
-      onIframeLoad(tabId) {
-        const tab = tabs.find(t => t.id === tabId);
-        if (tab) {
-          tab.loading = false;
-          tab.title = this.getIframeTitle(tabId) || 'Untitled';
-          
-          // Update tab title
-          this.updateTabsUI();
-          
-          // Update history
-          if (tab.history.length > 0) {
-            const lastHistoryItem = history.find(h => h.url === tab.history[tab.historyIndex]);
-            if (lastHistoryItem) {
-              lastHistoryItem.title = tab.title;
-              this.updateHistoryUI();
-            }
-          }
-        }
-        
-        this.showLoading(false);
-        this.updateStatus('Page loaded');
-      }
-      
-      onIframeError(tabId) {
-        const tab = tabs.find(t => t.id === tabId);
-        if (tab) {
-          tab.loading = false;
-          this.updateTabsUI();
-        }
-        
-        this.showLoading(false);
-        this.updateStatus('Load error');
-      }
-      
-      getIframeTitle(tabId) {
-        const iframe = document.getElementById(`iframe${tabId}`);
-        if (iframe && iframe.contentWindow) {
-          try {
-            return iframe.contentWindow.document.title;
-          } catch (e) {
-            return iframe.src;
-          }
-        }
-        return '';
-      }
-      
-      getSearchTemplate() {
-        const engine = localStorage.getItem('selectedSearchEngine') || 'brave';
-        const templates = {
-          google: 'https://www.google.com/search?q=%s',
-          bing: 'https://www.bing.com/search?q=%s',
-          duckduckgo: 'https://duckduckgo.com/?q=%s',
-          brave: 'https://search.brave.com/search?q=%s'
-        };
-        
-        if (engine === 'custom') {
-          return localStorage.getItem('customSearchTemplate') || templates.brave;
-        }
-        
-        return templates[engine] || templates.brave;
-      }
-      
-      updateNavigationButtons() {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (tab) {
-          elements.backBtn.disabled = tab.historyIndex <= 0;
-          elements.forwardBtn.disabled = tab.historyIndex >= tab.history.length - 1;
-        }
-      }
-      
-      updateBookmarkButton() {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (tab && tab.url) {
-          const isBookmarked = bookmarks.some(b => b.url === tab.url);
-          const icon = isBookmarked ? 'fas fa-star' : 'far fa-star';
-          elements.bookmarkBtn.innerHTML = `<i class="${icon}"></i>`;
-        }
-      }
-      
-      toggleBookmark() {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (!tab || !tab.url) return;
-        
-        const existingIndex = bookmarks.findIndex(b => b.url === tab.url);
-        
-        if (existingIndex >= 0) {
-          // Remove bookmark
-          bookmarks.splice(existingIndex, 1);
-        } else {
-          // Add bookmark
-          bookmarks.unshift({
-            url: tab.url,
-            title: tab.title || 'Untitled',
-            timestamp: Date.now()
-          });
-        }
-        
-        this.updateBookmarkButton();
-        this.updateBookmarksUI();
-        this.saveData();
-      }
-      
-      addCurrentBookmark() {
-        const tab = tabs.find(t => t.id === currentTabId);
-        if (tab && tab.url) {
-          const existing = bookmarks.find(b => b.url === tab.url);
-          if (!existing) {
-            bookmarks.unshift({
-              url: tab.url,
-              title: tab.title || 'Untitled',
-              timestamp: Date.now()
-            });
-            this.updateBookmarkButton();
-            this.updateBookmarksUI();
-            this.saveData();
-          }
-        }
-      }
-      
-      updateBookmarksUI() {
-        const bookmarksList = document.getElementById('bookmarksList');
-        if (!bookmarksList) return;
-        
-        bookmarksList.innerHTML = '';
-        
-        if (bookmarks.length === 0) {
-          bookmarksList.innerHTML = '<div class="empty-state">No bookmarks yet</div>';
-          return;
-        }
-        
-        bookmarks.forEach(bookmark => {
-          const item = document.createElement('div');
-          item.className = 'bookmark-item';
-          item.innerHTML = `
-            <div class="bookmark-icon">
-              <i class="fas fa-bookmark"></i>
-            </div>
-            <div class="bookmark-info">
-              <div class="bookmark-title">${this.escapeHtml(bookmark.title)}</div>
-              <div class="bookmark-url">${this.escapeHtml(bookmark.url)}</div>
-            </div>
-          `;
-          
-          item.addEventListener('click', () => {
-            this.navigateTo(bookmark.url);
-            this.togglePanel('bookmarksPanel');
-          });
-          
-          bookmarksList.appendChild(item);
+      // Quick links navigation
+      elements.quickLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const url = e.currentTarget.getAttribute('data-url');
+          navigateTo(url);
         });
-      }
+      });
       
-      updateHistoryUI() {
-        const historyList = document.getElementById('historyList');
-        if (!historyList) return;
-        
-        historyList.innerHTML = '';
-        
-        if (history.length === 0) {
-          historyList.innerHTML = '<div class="empty-state">No browsing history</div>';
-          return;
+      // URL bar form submission
+      elements.searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        navigateTo(elements.urlInput.value);
+      });
+      
+      elements.newTabSearchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        navigateTo(elements.newTabSearchInput.value);
+      });
+      
+      // Navigation buttons
+      elements.backBtn.addEventListener('click', () => {
+        // Simple back navigation - would need history tracking for full implementation
+        document.getElementById('statusText').textContent = 'Back button clicked';
+      });
+      
+      elements.forwardBtn.addEventListener('click', () => {
+        document.getElementById('statusText').textContent = 'Forward button clicked';
+      });
+      
+      elements.refreshBtn.addEventListener('click', () => {
+        const tab = tabs.find(t => t.id === currentTabId);
+        if (tab && tab.url) {
+          navigateTo(tab.url);
+        }
+      });
+      
+      // Tab management
+      elements.newTabBtn.addEventListener('click', createNewTab);
+      elements.addTabBtn.addEventListener('click', createNewTab);
+      
+      // Tab click events
+      document.addEventListener('click', (e) => {
+        // Tab switching
+        if (e.target.closest('.tab')) {
+          const tab = e.target.closest('.tab');
+          const tabId = parseInt(tab.getAttribute('data-tab-id'));
+          switchTab(tabId);
         }
         
-        history.forEach((item, index) => {
-          const historyItem = document.createElement('div');
-          historyItem.className = 'history-item';
-          historyItem.innerHTML = `
-            <div class="history-icon">
-              <i class="fas fa-globe"></i>
-            </div>
-            <div class="history-info">
-              <div class="history-title">${this.escapeHtml(item.title)}</div>
-              <div class="history-url">${this.escapeHtml(item.url)}</div>
-            </div>
-          `;
-          
-          historyItem.addEventListener('click', () => {
-            this.navigateTo(item.url);
-            this.togglePanel('historyPanel');
-          });
-          
-          historyList.appendChild(historyItem);
-        });
-      }
-      
-      clearHistory() {
-        if (confirm('Are you sure you want to clear all browsing history?')) {
-          history = [];
-          this.updateHistoryUI();
-          this.saveData();
+        // Tab closing
+        if (e.target.closest('.tab-close')) {
+          const tabId = parseInt(e.target.closest('.tab-close').getAttribute('data-tab-id'));
+          closeTab(tabId);
+          e.stopPropagation();
         }
-      }
+      });
       
-      clearBrowsingData() {
-        if (confirm('Clear all browsing data (history, cookies, cache)?')) {
-          history = [];
-          localStorage.removeItem('browserHistory');
-          this.updateHistoryUI();
-          this.updateStatus('Browsing data cleared');
-        }
-      }
+      // Panels
+      elements.bookmarksBtn.addEventListener('click', () => {
+        elements.bookmarksPanel.classList.toggle('active');
+      });
       
-      clearCache() {
-        // Clear service worker cache
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(registrations => {
-            registrations.forEach(registration => registration.unregister());
-          });
-        }
-        
-        // Clear localStorage items that might cache data
-        localStorage.removeItem('browserCache');
-        this.updateStatus('Cache cleared');
-      }
+      elements.historyBtn.addEventListener('click', () => {
+        elements.historyPanel.classList.toggle('active');
+      });
       
-      resetSettings() {
-        if (confirm('Reset all settings to defaults?')) {
-          localStorage.clear();
-          location.reload();
-        }
-      }
-      
-      toggleSettings() {
+      elements.settingsBtn.addEventListener('click', () => {
         elements.overlay.classList.toggle('active');
-        isSettingsOpen = !isSettingsOpen;
-        
-        if (isSettingsOpen) {
-          this.loadSettingsValues();
-        }
-      }
+      });
       
-      switchSettingsTab(tabName) {
-        // Update tab buttons
-        document.querySelectorAll('.settings-tab').forEach(tab => {
-          tab.classList.toggle('active', tab.getAttribute('data-settings-tab') === tabName);
+      elements.closeSettingsBtn.addEventListener('click', () => {
+        elements.overlay.classList.remove('active');
+      });
+      
+      elements.overlay.addEventListener('click', (e) => {
+        if (e.target === elements.overlay) {
+          elements.overlay.classList.remove('active');
+        }
+      });
+      
+      // Close panel buttons
+      document.querySelectorAll('.close-panel-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const panel = e.target.getAttribute('data-panel');
+          document.getElementById(panel).classList.remove('active');
         });
-        
-        // Update content
-        document.querySelectorAll('.settings-tab-content').forEach(content => {
-          content.classList.toggle('active', content.getAttribute('data-settings-content') === tabName);
+      });
+      
+      // Settings tabs
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          const tabName = e.target.getAttribute('data-settings-tab');
+          
+          // Update tab buttons
+          document.querySelectorAll('.settings-tab').forEach(t => {
+            t.classList.toggle('active', t.getAttribute('data-settings-tab') === tabName);
+          });
+          
+          // Update content
+          document.querySelectorAll('.settings-tab-content').forEach(content => {
+            content.classList.toggle('active', content.getAttribute('data-settings-content') === tabName);
+          });
         });
-      }
+      });
       
-      loadSettingsValues() {
-        // Load WISP URL
-        const savedWisp = localStorage.getItem('selectedWisp') || 'wss://gointospace.app/wisp/';
-        document.getElementById('websocket').value = savedWisp;
-        
-        // Load transport
-        const savedTransport = localStorage.getItem('selectedTransport') || 'epoxy';
-        document.querySelector(`input[name="transport"][value="${savedTransport}"]`).checked = true;
-        
-        // Load search engine
-        const savedEngine = localStorage.getItem('selectedSearchEngine') || 'brave';
-        document.getElementById('searchEnginePicker').value = savedEngine;
-        
-        // Load tab cloak
-        const savedCloakTitle = localStorage.getItem('cloakedTitle') || '';
-        const savedCloakIcon = localStorage.getItem('cloakedIcon') || '';
-        document.getElementById('tabCloak').value = savedCloakTitle;
-        document.getElementById('tabCloakIcon').value = savedCloakIcon;
-      }
+      // Theme picker
+      const themePicker = document.getElementById('themePicker');
+      themePicker.addEventListener('change', (e) => {
+        const theme = e.target.value;
+        document.body.className = theme;
+        localStorage.setItem('selectedTheme', theme);
+      });
       
-      saveTabCloak() {
-        const title = document.getElementById('tabCloak').value.trim();
-        const icon = document.getElementById('tabCloakIcon').value.trim();
-        
-        if (title) localStorage.setItem('cloakedTitle', title);
-        else localStorage.removeItem('cloakedTitle');
-        
-        if (icon) localStorage.setItem('cloakedIcon', icon);
-        else localStorage.removeItem('cloakedIcon');
-        
-        this.applyTabCloak(title, icon);
-      }
+      // Load saved theme
+      const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+      document.body.className = savedTheme;
+      themePicker.value = savedTheme;
       
-      clearTabCloak() {
-        localStorage.removeItem('cloakedTitle');
-        localStorage.removeItem('cloakedIcon');
-        document.getElementById('tabCloak').value = '';
-        document.getElementById('tabCloakIcon').value = '';
-        this.restoreOriginalTab();
-      }
-      
-      previewTabCloak() {
-        const title = document.getElementById('tabCloak').value.trim() || 'TinyJet Browser';
-        const icon = document.getElementById('tabCloakIcon').value.trim() || 'https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico';
-        this.applyTabCloak(title, icon);
-      }
-      
-      applyTabCloak(title, iconUrl) {
-        if (title) document.title = title;
-        if (iconUrl) {
-          let link = document.querySelector('link[rel~="icon"]');
-          if (!link) {
-            link = document.createElement('link');
-            link.rel = 'icon';
-            document.head.appendChild(link);
-          }
-          link.href = iconUrl;
-        }
-      }
-      
-      restoreOriginalTab() {
-        document.title = 'TinyJet Browser';
-        const link = document.querySelector('link[rel~="icon"]');
-        if (link) {
-          link.href = 'https://cdn.jsdelivr.net/gh/mercuryworkshop/scramjet-app@latest/public/favicon.ico';
-        }
-      }
-      
-      togglePanel(panelId) {
-        const panel = document.getElementById(panelId);
-        panel.classList.toggle('active');
-        
-        // Close other panels
-        document.querySelectorAll('.side-panel').forEach(p => {
-          if (p.id !== panelId) p.classList.remove('active');
-        });
-      }
-      
-      closeAllPanels() {
-        document.querySelectorAll('.side-panel').forEach(panel => {
-          panel.classList.remove('active');
-        });
-        
-        if (isSettingsOpen) {
-          this.toggleSettings();
-        }
-      }
-      
-      showLoading(show, message = 'Loading...') {
-        if (show) {
-          elements.loadingScreen.classList.add('active');
-          elements.loadingMessage.textContent = message;
-          elements.loadingIndicator.style.display = 'flex';
-        } else {
-          elements.loadingScreen.classList.remove('active');
-          elements.loadingIndicator.style.display = 'none';
-        }
-      }
-      
-      updateStatus(message) {
-        elements.statusText.textContent = message;
-      }
-      
-      escapeHtml(text) {
+      // Utility function
+      function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
+      
+      console.log('Basic UI initialized');
     }
-
-    // Initialize browser when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      window.browser = new TinyJetBrowser();
-    });
+    
+    async function initProxySystem() {
+      console.log('Initializing proxy system...');
+      
+      try {
+        // Try to load the proxy system
+        const module = await import("https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/index.mjs");
+        console.log('Proxy module loaded successfully');
+        
+        // Initialize Scramjet
+        const { ScramjetController } = $scramjetLoadController();
+        const scramjet = new ScramjetController({ 
+          files: { 
+            wasm: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/wasm.wasm", 
+            all: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.all.js", 
+            sync: "https://cdn.jsdelivr.net/gh/AerialiteLabs/tinyjet-frontend@latest/tinyjet/scramjet.sync.js" 
+          } 
+        });
+        
+        try {
+          scramjet.init();
+          console.log('Scramjet initialized successfully');
+          
+          // Update status
+          document.getElementById('statusText').textContent = 'Proxy system ready';
+          
+          // Override the simple navigateTo function with proxy-enabled version
+          window.navigateTo = function(input) {
+            const tab = window.tabs.find(t => t.id === window.currentTabId);
+            if (!tab) return;
+            
+            let url;
+            
+            // Check if input is a URL
+            try {
+              url = new URL(input);
+              if (!url.protocol.startsWith('http')) {
+                url = new URL('https://' + input);
+              }
+            } catch {
+              // If not a valid URL, treat as search
+              const searchTemplate = 'https://www.google.com/search?q=%s';
+              url = new URL(searchTemplate.replace('%s', encodeURIComponent(input)));
+            }
+            
+            const finalUrl = url.toString();
+            
+            // Use Scramjet to encode the URL
+            const encodedUrl = scramjet.encodeUrl(finalUrl);
+            
+            // Update tab state
+            tab.url = finalUrl;
+            tab.title = 'Loading...';
+            
+            // Update UI
+            window.updateTabsUI();
+            document.getElementById('url').value = finalUrl;
+            
+            // Hide new tab page
+            document.querySelector('.new-tab-page').classList.remove('active');
+            
+            // Load in iframe with proxy
+            const iframe = document.getElementById(`iframe${window.currentTabId}`);
+            if (iframe) {
+              document.getElementById('statusText').textContent = 'Loading through proxy...';
+              document.getElementById('loadingIndicator').style.display = 'flex';
+              
+              iframe.src = encodedUrl;
+              
+              iframe.onload = function() {
+                try {
+                  tab.title = iframe.contentWindow.document.title || finalUrl;
+                  window.updateTabsUI();
+                  document.getElementById('statusText').textContent = 'Loaded via proxy';
+                } catch (e) {
+                  tab.title = finalUrl;
+                  window.updateTabsUI();
+                  document.getElementById('statusText').textContent = 'Loaded via proxy';
+                }
+                document.getElementById('loadingIndicator').style.display = 'none';
+              };
+              
+              iframe.onerror = function() {
+                tab.title = 'Proxy error';
+                window.updateTabsUI();
+                document.getElementById('statusText').textContent = 'Proxy connection failed';
+                document.getElementById('loadingIndicator').style.display = 'none';
+              };
+            }
+          };
+          
+          console.log('Proxy system fully initialized');
+          
+        } catch (e) {
+          console.error('Scramjet initialization failed:', e);
+          document.getElementById('statusText').textContent = 'Proxy system failed - using direct connections';
+        }
+        
+      } catch (e) {
+        console.error('Failed to load proxy module:', e);
+        document.getElementById('statusText').textContent = 'Using direct connections';
+      }
+    }
   </script>
 </body>
 </html>
